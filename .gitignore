@@ -1,0 +1,4 @@
+public/bundle*
+public/*.wasm
+node_modules
+*.log
