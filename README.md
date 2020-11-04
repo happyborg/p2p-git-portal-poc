@@ -24,7 +24,7 @@ The app in branch `main` runs and uses default Svelte HTML/CSS styling.
 
 I believe we should change the look and feel to mirror github in the short term. The reason being to help highlight our aim of replicating the key features of a git portal like github.
 
-If you wish to comment on or help with HTML/CSS styling please see https://github.com/happybeing/p2p-git-portal-poc/issues/1.
+If you wish to comment on or help with HTML/CSS styling please see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1).
 
 Later we can differentiate for a more community driven and oriented feature set and our own visual identity, but initially I think it will help to demonstrate the purpose of a proof-of-concept, what is working at any stage and where work is still needed.
 
