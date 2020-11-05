@@ -3,7 +3,7 @@ import { onMount } from 'svelte';
 import wasm from './main.go';
 import NumberInput from './NumberInput.svelte';
 
-const { add, raiseError, someValue } = wasm;
+const { add, gitClone, raiseError, someValue } = wasm;
 
 let staticValue;
 
@@ -11,7 +11,13 @@ onMount(async () => {
   staticValue = await someValue();
 });
 
-// TODO sort out issue with add_old() and add() in main.go
+async function doGitClone() {
+	try {
+		await gitClone();
+	} catch (e) {
+		errorMessage = e
+	}
+}
 
 let values = [9, 9];
 let total;
@@ -59,6 +65,10 @@ async function appRaiseError() {
 <main>
 <h1>p2p Git Portal (POC)</h1>
 
+<p>
+	<button type="button" on:click={() => { doGitClone(); }}>Test git clone</button>
+</p>
+<hr>
 <p>Change the values in the boxes below and the total will update.<br/>Click the button to add more input boxes.</p>
 {#each values as value, index}
 <!-- Version using a Svelte component -->
