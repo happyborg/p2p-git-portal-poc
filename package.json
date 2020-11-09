@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Proof of concept Golang wasm app",
   "license": "GPL-3.0-or-later",
-  "author": "Mark Hughes (happybeing)",
+  "author": "happybeing",
   "dependencies": {
-    "svelte": "^3.29.4"
+    "svelte": "^3.29.4",
+    "svelte-file-dropzone": "^0.0.12"
   },
   "devDependencies": {
     "css-loader": "^2.1.0",
@@ -22,6 +23,9 @@
     "build": "webpack",
     "dev": "webpack-dev-server --content-base public"
   },
-  "keywords": ["svelte", "golang", "wasm"],
-  "author": "happybeing"
+  "keywords": [
+    "svelte",
+    "golang",
+    "wasm"
+  ]
 }

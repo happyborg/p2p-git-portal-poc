@@ -3,6 +3,7 @@
 // import wasm from './main.go';
 // const { add, gitClone, raiseError, someValue } = wasm;
 
+import FileUploadPanel from './test/FileUploadPanel.svelte'
 import GoGitClonePanel from './test/GoGitClonePanel.svelte'
 import GoWasmExample from './test/GoWasmExample.svelte';
 
@@ -35,6 +36,13 @@ let errorMessage;
 			max-width: none;
 		}
 	}
+	.top-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		/* grid-template-rows: 5fr 20fr 5fr; */
+		grid-gap: 10px;
+		/* height: 720px; */
+	}
 </style>
 
 <main>
@@ -46,7 +54,11 @@ let errorMessage;
 </div>
 {/if}
 
-<GoGitClonePanel bind:errorMessage={errorMessage} ></GoGitClonePanel>
+<div class='top-grid'>
+	<FileUploadPanel bind:errorMessage={errorMessage} ></FileUploadPanel>
+	<GoGitClonePanel bind:errorMessage={errorMessage} ></GoGitClonePanel>
+</div>
+
 <GoWasmExample bind:errorMessage={errorMessage} ></GoWasmExample>
 </main>
 

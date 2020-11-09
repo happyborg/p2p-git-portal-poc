@@ -15,7 +15,9 @@ async function doGitClone() {
 }
 
 </script>
-<hr><h2>Go Git Clone Panel</h2>
-<p>
-	<button type="button" on:click={() => { doGitClone(); }}>Test git clone</button>
-</p>
+<div>
+	<hr><h2>Go Git Clone Panel</h2>
+	<p>
+		<button type="button" on:click={() => { doGitClone(); }}>Test git clone</button>
+	</p>
+</div>
