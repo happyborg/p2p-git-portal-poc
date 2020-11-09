@@ -5,8 +5,7 @@
   "license": "GPL-3.0-or-later",
   "author": "happybeing",
   "dependencies": {
-    "svelte": "^3.29.4",
-    "svelte-file-dropzone": "^0.0.12"
+    "svelte": "^3.29.4"
   },
   "devDependencies": {
     "css-loader": "^2.1.0",
