@@ -6,11 +6,24 @@ import (
 	"errors"
 	"syscall/js"
 
+	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
+	// "/home/mrh/src/go/src/github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
+
+	// OK FOR CLI if I have gobridge/go.mod containing:
+	// module github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
+	// go 1.13
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/storage/memory"
-	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
-	// "/home/mrh/src/go/src/github.com/happybeing/go-git"
-	// "/home/mrh/src/go/src/github.com/happybeing/go-git/storage/memory"
+	//
+	// TRY FOR yarn test:
+	// "github.com/happybeing/go-git"
+	// "github.com/happybeing/go-git/storage/memory"
+	// Gets deleted on save"github.com/happybeing/go-billy"
+	//
+	// TRY FOR yarn build:
+	// "github.com/happybeing/go-git/v5"
+	// "github.com/happybeing/go-git/v5/storage/memory"
+	// //
 	// "github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
 	// "github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
 	// "/home/mrh/src/wasm/webpack-golang-wasm-async-loader/lib/gobridge"
@@ -24,22 +37,62 @@ var global = js.Global()
 func gitClone(this js.Value, args []js.Value) (interface{}, error) {
 	ret := 0
 
+	url := ""
+	message := ""
 	println("TODO - implement git clone")
 	// Clones the given repository in memory, creating the remote, the local
 	// branches and fetching the objects, exactly as:
-	println("git clone https://github.com/go-git/go-billy")
+	// println("git clone https://github.com/happybeing/p2p-git-portal-poc")
+	// r, _ := git.Clone(memory.NewStorage(), nil, &git.CloneOptions{
+	// 	URL: "https://github.com/happybeing/p2p-git-portal-poc",
+	// })
+
+	// println("git://github.com/happybeing/p2p-git-portal-poc")
+	// r, err := git.Clone(memory.NewStorage(), nil, &git.CloneOptions{
+	// 	URL: "git://github.com/happybeing/p2p-git-portal-poc",
+	// })
+
+	message = "ssh server git.Clone() "
+	url = "mrh@127.0.0.1:.gitserver/test-git"
+	// url = "mrh@127.0.0.1:home/mrh/.gitserver/test-git"
+
+	// message = "access token auth / git clone "
+	// url = "https://github.com/happybeing/p2p-git-portal-poc"
+	// url = "git@github.com:happybeing/p2p-git-portal-poc"
+	// // url = "git://github.com/happybeing/p2p-git-portal-poc"
+	// user := "happybeing"
+	// token := "248a93a240e309a9246c1caed2cd094bb1c09e70"
+
+	// message = "local server git.Clone() "
+	// url = "http://127.0.0.1:1236"
+
+	println(message, url)
 
 	r, err := git.Clone(memory.NewStorage(), nil, &git.CloneOptions{
-		URL: "https://github.com/go-git/go-billy",
+		// The intended use of a GitHub personal access token is in replace of your password
+		// because access tokens can easily be revoked.
+		// https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/
+		// Auth: &http.BasicAuth{
+		// 	Username: user, // yes, this can be anything except an empty string
+		// 	Password: token,
+		// },
+		URL: url,
 	})
 
+	if err != nil {
+		println("git.Clone() failed: ", err.Error())
+	}
 	// CheckIfError(err)
 
 	// Gets the HEAD history from HEAD, just like this command:
 	println("git log")
 
 	// ... retrieves the branch pointed by HEAD
-	ref, err := r.Head()
+	_, err2 := r.Head()
+	if err2 != nil {
+		println("r.Head() failed: ", err2.Error())
+	}
+	// ref, err := r.Head()
 	// CheckIfError(err)
 
 	return ret, nil
