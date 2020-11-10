@@ -4,6 +4,8 @@ package main
 
 import (
 	"errors"
+	"fmt"
+	"log"
 	"syscall/js"
 
 	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
@@ -12,6 +14,8 @@ import (
 	// OK FOR CLI if I have gobridge/go.mod containing:
 	// module github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
 	// go 1.13
+
+	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/storage/memory"
 	//
@@ -34,18 +38,60 @@ import (
 
 var global = js.Global()
 
-func upload(this js.Value, args []js.Value) (interface{}, error) {
+var fs = memfs.New()
+
+func upload(this js.Value, files []js.Value) (interface{}, error) {
 	// if !ready {
 	// 	return nil, nil
 	// }
 
 	ret := 0
 
-	for _, item := range args {
-		println("GO uploading: ", item.String())
+	for _, file := range files {
+		println("GO uploading: ", file.String())
+		// if file.IsDir() {
+		// 	continue
+		// }
+
+		// src, err := origin.Open(file)
+		// if err != nil {
+		// 	return nil, err
+		// }
+
+		dst, err := fs.Create(file.String())
+		if err != nil {
+			return nil, err
+		}
+
+		// if _, err = io.Copy(dst, src); err != nil {
+		// 	return nil, err
+		// }
+
+		if err := dst.Close(); err != nil {
+			return nil, err
+		}
+
+		// if err := src.Close(); err != nil {
+		// 	return nil, err
+		// }
 	}
 
 	return ret, nil
+}
+
+func listFiles(this js.Value, args []js.Value) (interface{}, error) {
+	listing, err := fs.ReadDir("testrepo")
+	// listing, err := fs.ReadDir(args[0].String())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	println("Listing files:")
+	for _, f := range listing {
+		fmt.Println(f.Name())
+	}
+
+	return 0, err
 }
 
 func gitClone(this js.Value, args []js.Value) (interface{}, error) {
@@ -132,6 +178,7 @@ func main() {
 	c := make(chan struct{}, 0)
 
 	gobridge.RegisterCallback("upload", upload)
+	gobridge.RegisterCallback("listFiles", listFiles)
 
 	gobridge.RegisterCallback("add", add)
 	gobridge.RegisterCallback("gitClone", gitClone)

@@ -3,6 +3,7 @@ module github.com/happybeing/p2p-git-portal-poc
 go 1.13
 
 require (
+	github.com/go-git/go-billy/v5 v5.0.0
 	github.com/go-git/go-git v4.7.0+incompatible // indirect
 	// Try for yarn test:
 	// github.com/happybeing/go-git/v5
