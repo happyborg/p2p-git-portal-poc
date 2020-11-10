@@ -1,6 +1,7 @@
 <script>
 import { onMount } from "svelte";
 
+export let droppedFiles;
 
 // Based on: https://stackoverflow.com/questions/3590058/does-html5-allow-drag-drop-upload-of-folders-or-a-folder-tree/53058574
 // NOTE: directory upload works in Firefox, but not in Chromium 82, where
@@ -55,22 +56,23 @@ async function readEntriesPromise(directoryReader) {
 }
 
 let elDrop;
-let elItems;
+// let elItems;
 
 onMount(() => {
     elDrop = document.getElementById('dropzone');
-    elItems = document.getElementById('items');
+    // elItems = document.getElementById('items');
     
     elDrop.addEventListener('dragover', function (event) {
         event.preventDefault();
-        elItems.innerHTML = 0;
+        // elItems.innerHTML = 0;
     });
     
     elDrop.addEventListener('drop', async function (event) {
         // console.dir(event);
         event.preventDefault();
         let items = await getAllFileEntries(event.dataTransfer.items);
-        elItems.innerHTML = items.length;
+        droppedFiles = [...items];
+        // elItems.innerHTML = droppedFiles.length;
     });
 });
 </script>
@@ -92,9 +94,8 @@ onMount(() => {
 
 <div>
     <hr>
-    <h2>Upload Files</h2>
+    <h2>Upload Files Panel</h2>
     <p>Note: directory upload works in Firefox but not Chromium 82</p>
     <div id="dropzone" effectAllowed="move">Drop files here!</div>
-    <ul id="items"></ul>
 </div>
 

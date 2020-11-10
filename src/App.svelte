@@ -1,13 +1,27 @@
 <script>
 // import { onMount } from 'svelte';
-// import wasm from './main.go';
-// const { add, gitClone, raiseError, someValue } = wasm;
+import wasm from './main.go';
+const { upload, add } = wasm;
 
 import FileUploadPanel from './test/FileUploadPanel.svelte'
 import GoGitClonePanel from './test/GoGitClonePanel.svelte'
 import GoWasmExample from './test/GoWasmExample.svelte';
 
+let droppedFiles = [];
+let uploadingFile;
 let errorMessage;
+
+$: manageUploads(droppedFiles)
+
+async function manageUploads(droppedFiles) {
+	console.log("manageUploads()");
+
+	let file;
+	while (file = droppedFiles.pop()) {
+		// console.log('uploading: ', file.fullPath);
+		await upload(...[file.fullPath]);
+	}
+}
 
 </script>
 
@@ -53,9 +67,14 @@ let errorMessage;
 	<button type="button" on:click={() => { errorMessage = undefined; }}>Dismiss</button>
 </div>
 {/if}
-
+<p>Files to upload: {droppedFiles.length}<br/>
+{#if uploadingFile}
+Uploading: {uploadingFile}
+{/if}
+<br/>
+</p>
 <div class='top-grid'>
-	<FileUploadPanel bind:errorMessage={errorMessage} ></FileUploadPanel>
+	<FileUploadPanel bind:droppedFiles={droppedFiles} bind:errorMessage={errorMessage} ></FileUploadPanel>
 	<GoGitClonePanel bind:errorMessage={errorMessage} ></GoGitClonePanel>
 </div>
 

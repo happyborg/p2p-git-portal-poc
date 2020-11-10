@@ -34,6 +34,20 @@ import (
 
 var global = js.Global()
 
+func upload(this js.Value, args []js.Value) (interface{}, error) {
+	// if !ready {
+	// 	return nil, nil
+	// }
+
+	ret := 0
+
+	for _, item := range args {
+		println("GO uploading: ", item.String())
+	}
+
+	return ret, nil
+}
+
 func gitClone(this js.Value, args []js.Value) (interface{}, error) {
 	ret := 0
 
@@ -100,7 +114,6 @@ func gitClone(this js.Value, args []js.Value) (interface{}, error) {
 
 func add(this js.Value, args []js.Value) (interface{}, error) {
 	ret := 0
-
 	for _, item := range args {
 		val := item.Int()
 		ret += val
@@ -113,14 +126,20 @@ func err(this js.Value, args []js.Value) (interface{}, error) {
 	return nil, errors.New("This is an error")
 }
 
+var ready = false
+
 func main() {
 	c := make(chan struct{}, 0)
-	println("Web Assembly is ready")
+
+	gobridge.RegisterCallback("upload", upload)
+
 	gobridge.RegisterCallback("add", add)
 	gobridge.RegisterCallback("gitClone", gitClone)
 	gobridge.RegisterCallback("raiseError", err)
 	gobridge.RegisterValue("someValue", "Hello World")
 	gobridge.RegisterValue("numericValue", 123)
 
+	ready = true
+	println("Web Assembly is ready")
 	<-c // Makes the Go process wait until we want it to end
 }
