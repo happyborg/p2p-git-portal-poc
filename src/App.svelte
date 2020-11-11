@@ -1,7 +1,7 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { upload } = wasm;
+const { uploadFile } = wasm;
 
 import FileUploadPanel from './test/FileUploadPanel.svelte'
 import GoGitClonePanel from './test/GoGitClonePanel.svelte'
@@ -13,13 +13,37 @@ let errorMessage;
 
 $: manageUploads(droppedFiles)
 
+function readFile(entry, successCallback, errorCallback) {
+  entry.file(function(file) {
+    let reader = new FileReader();
+
+    reader.onload = function() {
+      successCallback(entry, reader.result);
+    };
+
+    reader.onerror = function() {
+      errorCallback(entry, reader.error);
+    }
+
+    reader.readAsArrayBuffer(file);
+  }, errorCallback);
+}
+
 async function manageUploads(droppedFiles) {
 	console.log("manageUploads()");
 
-	let file;
-	while (file = droppedFiles.pop()) {
-		// console.log('uploading: ', file.fullPath);
-		await upload(...[file.fullPath]);
+	let fileInfo;
+	while (fileInfo = droppedFiles.pop()) {
+		console.log('uploading: ', fileInfo.fullPath);
+		// console.dir(fileInfo);
+		readFile(fileInfo, 
+			async (fileInfo, result) => { 
+				console.log('passing to Golang: ', fileInfo.fullPath)
+				console.dir(result);
+				await uploadFile(...[fileInfo.fullPath, new Uint8Array(result)])
+			},
+			(fileInfo, result) => { console.log('error loading file: ', fileInfo.fullPath)}
+		);
 	}
 }
 
