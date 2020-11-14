@@ -2,13 +2,13 @@
 // import { onMount } from 'svelte';
 import wasm from '../main.go';
 
-const { gitClone, testGitCloneDeadlock, listFiles } = wasm;
+const { gitClone, testGitClone, listFiles } = wasm;
 
 export let errorMessage;
 
 async function doGitClone() {
 	try {
-		await testGitCloneDeadlock();
+		await testGitClone();
 	} catch (e) {
 		errorMessage = e
 	}
