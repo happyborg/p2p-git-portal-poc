@@ -3,6 +3,9 @@
 import wasm from './main.go';
 const { uploadFile } = wasm;
 
+import RepoDashboardPanel from './RepoDashboardPanel.svelte'
+import CommitsListingPanel from './CommitsListingPanel.svelte'
+
 import FileUploadPanel from './test/FileUploadPanel.svelte'
 import GoGitClonePanel from './test/GoGitClonePanel.svelte'
 import GoWasmExample from './test/GoWasmExample.svelte';
@@ -12,6 +15,15 @@ let uploadingFile;
 let errorMessage;
 
 $: manageUploads(droppedFiles)
+
+let activeRepository = 0;
+
+// Development:
+let allRepositories = [
+    {path: "/test1"},
+    {path: "/test2"},
+    {path: "/test3"},
+];
 
 function readFile(entry, successCallback, errorCallback) {
   entry.file(function(file) {
@@ -85,20 +97,26 @@ async function manageUploads(droppedFiles) {
 
 <main>
 <h1>p2p Git Portal (POC)</h1>
+<div class='top-grid'>
+	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
+	<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
+</div>
+
 {#if errorMessage}
 <div>
 	<p style="color: #f00">{errorMessage}</p>
 	<button type="button" on:click={() => { errorMessage = undefined; }}>Dismiss</button>
 </div>
 {/if}
-<p>Files to upload: {droppedFiles.length}<br/>
-{#if uploadingFile}
-Uploading: {uploadingFile}
-{/if}
-<br/>
-</p>
 <div class='top-grid'>
-	<FileUploadPanel bind:droppedFiles={droppedFiles} bind:errorMessage={errorMessage} ></FileUploadPanel>
+	<FileUploadPanel bind:droppedFiles={droppedFiles} bind:errorMessage={errorMessage} >
+		<p>Files to upload: {droppedFiles.length}<br/>
+			{#if uploadingFile}
+				Uploading: {uploadingFile}
+			{/if}
+			<br/>
+		</p>		
+	</FileUploadPanel>
 	<GoGitClonePanel bind:errorMessage={errorMessage} ></GoGitClonePanel>
 </div>
 
