@@ -9,31 +9,13 @@ import (
 	"syscall/js"
 
 	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
-	// "/home/mrh/src/go/src/github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
 
 	// OK FOR CLI if I have gobridge/go.mod containing:
 	// module github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
 	// go 1.13
-
 	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/storage/memory"
-	//
-	// TRY FOR yarn test:
-	// "github.com/happybeing/go-git"
-	// "github.com/happybeing/go-git/storage/memory"
-	// Gets deleted on save"github.com/happybeing/go-billy"
-	//
-	// TRY FOR yarn build:
-	// "github.com/happybeing/go-git/v5"
-	// "github.com/happybeing/go-git/v5/storage/memory"
-	// //
-	// "github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
-	// "github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
-	// "/home/mrh/src/wasm/webpack-golang-wasm-async-loader/lib/gobridge"
-	// "../../webpack-golang-wasm-async-loader/lib/gobridge"
-	// "github.com/go-git/go-git/v5" // with go modules enabled (GO111MODULE=on or outside GOPATH)
-	// "github.com/go-git/go-git" // with go modules disabled
 )
 
 var global = js.Global()
@@ -124,7 +106,6 @@ func gitClone(this js.Value, args []js.Value) (interface{}, error) {
 
 	url = "https://gitlab.com/weblate/libvirt"
 
-	fs := memfs.New()
 	storage := memory.NewStorage()
 	go func() {
 		r, err := git.Clone(storage, fs, &git.CloneOptions{URL: url})
@@ -161,22 +142,18 @@ func testGitClone(this js.Value, args []js.Value) (interface{}, error) {
 
 	// github.com
 	// WORKS using local-cors-proxy, only for a specific service:
-	// url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
+	// yarn global add local-cors-proxy
+	// lcp --proxyUrl https://github.com
+	url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
 
 	// WORKS with isomorphic-git proxy service:
 	// url = "https://cors.isomorphic-git.org/github.com/happybeing/p2p-git-portal-poc.git"
-
-	// WORKS using local-cors-proxy for a given server:
-	// yarn global add local-cors-proxy
-	// lcp --proxyUrl https://github.com
-	url = "https://localhost:8171/github.com/happybeing/p2p-git-portal-poc.git"
 
 	// FAILS without proxy (including with CORS disabled in browser)
 	// url = "https://github.com/happybeing/p2p-git-portal-poc.git"
 	// token := "<replace with PAT>"
 
 	println(message, url)
-	fs := memfs.New()
 	storage := memory.NewStorage()
 	// Note: can't wait on this or go will exit due to a deadlock (as Clone() uses http.Get())
 	go func() {
