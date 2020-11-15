@@ -86,16 +86,13 @@ onMount(() => {
     padding: 20px;
     text-shadow: 1px 1px 0 #fff;
 }
-#items:empty::before {
-    color: #ccc;
-    content:"(File counts will be shown here.)";
-}
 </style>
 
 <div>
     <hr>
-    <h2>Upload Files Panel</h2>
+    <h2>Upload Repository</h2>
     <p>Note: directory upload works in Firefox but not Chromium 82</p>
-    <div id="dropzone" effectAllowed="move">Drop files here!</div>
+    <div id="dropzone" effectAllowed="move">Drop repository here</div>
+    <slot></slot>
 </div>
 
