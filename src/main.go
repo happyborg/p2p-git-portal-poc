@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"syscall/js"
 
 	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
@@ -15,6 +16,8 @@ import (
 	// go 1.13
 	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
+	gogit "github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/storage/memory"
 )
 
@@ -69,6 +72,45 @@ func listFiles(this js.Value, args []js.Value) (interface{}, error) {
 	return 0, err
 }
 
+//// Manage repositories
+//
+// This approach is just for the proof-of-concept. When using a p2p filesystem,
+// we probably want to clone directly to that rather than a Storer, but will
+// need to clone into a filesystem in memory rather than an in memory Storer.
+//
+// For now we keep a map of cloned URIs to Repository objects.
+//
+
+var repositories = map[string](*gogit.Repository){}
+
+func listRepositories(this js.Value, args []js.Value) (interface{}, error) {
+	println("Repositories:")
+	for uri, r := range repositories {
+		fmt.Println(uri)
+		cfg, err := r.Config()
+		if err != nil {
+			return nil, nil
+		}
+
+		fmt.Println("Author:", cfg.Author.Name, cfg.Author.Email)
+
+		// if f.IsDir() {
+		// 	fmt.Println(f.Name())
+		// 	descriptionPath := f.Name()
+		// 	file, err := fs.Open(descriptionPath)
+		// 	if err != nil {
+		// 		fmt.Println("can't open ", descriptionPath)
+		// 	} else {
+		// 		description := make([]byte, 2048)
+		// 		_, _ = file.Read(description)
+		// 		fmt.Println(f.Name, '-', description)
+		// 	}
+		// }
+	}
+
+	return 0, nil
+}
+
 // Clone a git repository
 //
 // This works under the following conditions:
@@ -113,6 +155,7 @@ func gitClone(this js.Value, args []js.Value) (interface{}, error) {
 			println("git.Clone() failed: ", err.Error())
 		} else {
 			println("Clone complete...")
+			repositories[url] = r
 			// Retrieve the branch pointed by HEAD
 			ref, err2 := r.Head()
 			if err2 != nil {
@@ -168,6 +211,7 @@ func testGitClone(this js.Value, args []js.Value) (interface{}, error) {
 			println("git.Clone() failed: ", err.Error())
 		} else {
 			println("Clone complete...")
+			repositories[url] = r
 			// Retrieve the branch pointed by HEAD
 			ref, err2 := r.Head()
 			if err2 != nil {
@@ -180,6 +224,56 @@ func testGitClone(this js.Value, args []js.Value) (interface{}, error) {
 
 	return nil, nil
 }
+
+//// Repository information
+//
+// showcase example: https://github.com/go-git/go-git/blob/master/_examples/showcase/main.go
+
+// args[]:
+//	[0] url - remote URL is used to identify a cloned repository (later will be a local identifier)
+
+func listHeadCommits(this js.Value, args []js.Value) (interface{}, error) {
+	url := args[0].String()
+
+	println("arg url: ", url)
+	url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
+
+	r, found := repositories[url]
+	if !found {
+		println("Unknown repository: ", url)
+		return nil, nil
+	}
+
+	// Latest commit on current branch
+	ref, err := r.Head()
+	if err != nil {
+		return nil, err
+	}
+
+	commit, err := r.CommitObject(ref.Hash())
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println("Latest commit:", commit)
+
+	// List commits
+	commitIter, err := r.Log(&git.LogOptions{From: commit.Hash})
+	if err != nil {
+		return nil, err
+	}
+
+	err = commitIter.ForEach(func(c *object.Commit) error {
+		hash := c.Hash.String()
+		line := strings.Split(c.Message, "\n")
+		fmt.Println(hash[:7], line[0])
+
+		return nil
+	})
+
+	return nil, nil
+}
+
+//// Redundant tests retained temporarily:
 
 func add(this js.Value, args []js.Value) (interface{}, error) {
 	ret := 0
@@ -202,6 +296,8 @@ func main() {
 
 	gobridge.RegisterCallback("uploadFile", uploadFile)
 	gobridge.RegisterCallback("listFiles", listFiles)
+	gobridge.RegisterCallback("listRepositories", listRepositories)
+	gobridge.RegisterCallback("listHeadCommits", listHeadCommits)
 	gobridge.RegisterCallback("testGitClone", testGitClone)
 
 	gobridge.RegisterCallback("add", add)

@@ -1,7 +1,7 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { uploadFile } = wasm;
+const { uploadFile, listRepositories, listHeadCommits } = wasm;
 
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
 import CommitsListingPanel from './CommitsListingPanel.svelte'
@@ -100,6 +100,13 @@ async function manageUploads(droppedFiles) {
 <div class='top-grid'>
 	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
 	<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
+</div>
+
+<div>
+	<p>
+		<button type="button" on:click={() => { listRepositories(); }}>Test list repos</button><br/>
+		<button type="button" on:click={() => { listHeadCommits("http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"); }}>Test list HEAD commits</button><br/>
+	</p>
 </div>
 
 {#if errorMessage}
