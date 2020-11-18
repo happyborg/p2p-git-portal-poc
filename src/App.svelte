@@ -1,7 +1,7 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { uploadFile, listRepositories, listHeadCommits } = wasm;
+const { uploadFile, listRepositories, listHeadCommits, getHeadCommitsRange } = wasm;
 
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
 import CommitsListingPanel from './CommitsListingPanel.svelte'
@@ -59,6 +59,18 @@ async function manageUploads(droppedFiles) {
 	}
 }
 
+async function testRangeCommits() {
+	console.log('testRangeCommits()')
+	let result = await getHeadCommitsRange("http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git", 0, 100);
+	console.dir(result);
+}
+
+async function testReturnTypes() {
+	console.log("testReturnTypes()")
+	let ret = await testTypes();
+	console.dir(ret);
+}
+
 </script>
 
 <style>
@@ -106,6 +118,7 @@ async function manageUploads(droppedFiles) {
 	<p>
 		<button type="button" on:click={() => { listRepositories(); }}>Test list repos</button><br/>
 		<button type="button" on:click={() => { listHeadCommits("http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"); }}>Test list HEAD commits</button><br/>
+		<button type="button" on:click={() => { testRangeCommits() }}>Test get range HEAD commits</button><br/>
 	</p>
 </div>
 

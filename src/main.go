@@ -273,6 +273,94 @@ func listHeadCommits(this js.Value, args []js.Value) (interface{}, error) {
 	return nil, nil
 }
 
+// args[]:
+//	[0] url - remote URL is used to identify a cloned repository (later will be a local identifier)
+//	[1] first - index of first commit starting at zero
+//  [2] last - index of last commit (inclusive, so to return just the first commit first=last=0)
+
+func getHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
+	url := args[0].String()
+	first := args[1].Int()
+	last := args[2].Int()
+
+	var err error
+	if last < first {
+		err = errors.New("Invalid range, 'last' must be at least 'first'")
+	} else if first < 0 {
+		err = errors.New("Invalid range, 'first' must not be less than 0")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	println("arg url: ", url)
+	url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
+
+	r, found := repositories[url]
+	if !found {
+		println("Unknown repository: ", url)
+		return nil, nil
+	}
+
+	// Latest commit on current branch
+	ref, err := r.Head()
+	if err != nil {
+		return nil, err
+	}
+
+	commit, err := r.CommitObject(ref.Hash())
+	if err != nil {
+		return nil, err
+	}
+
+	// List commits
+	commitIter, err := r.Log(&git.LogOptions{From: commit.Hash})
+	if err != nil {
+		return nil, err
+	}
+
+	commits := make([]interface{}, last-first+1)
+	commit_index := 0
+	total_commits := 0
+
+	err = commitIter.ForEach(func(c *object.Commit) error {
+		total_commits += 1
+		if commit_index >= first && commit_index <= last {
+			commit := make(map[string]interface{}, 0)
+			commit["hash"] = c.Hash.String()
+			commit["message"] = c.Message
+
+			commits[commit_index] = commit
+			commit_index += 1
+		}
+		return nil
+	})
+
+	ret_commits := make(map[string]interface{}, 0)
+	ret_commits["length"] = commit_index
+	ret_commits["total_commits"] = total_commits
+	ret_commits["commits"] = commits
+
+	return ret_commits, nil
+}
+
+//// Test syscall/js Go/Wasm types
+
+func testTypes(this js.Value, args []js.Value) (interface{}, error) {
+	person := make(map[string]interface{}, 0)
+
+	person["name"] = "Alice"
+	person["age"] = 35
+	person["height"] = 167.64
+
+	child := make(map[string]interface{}, 0)
+	child["name"] = "Peter"
+	child["age"] = 10
+	person["child"] = child
+
+	return person, nil
+}
+
 //// Redundant tests retained temporarily:
 
 func add(this js.Value, args []js.Value) (interface{}, error) {
@@ -298,6 +386,8 @@ func main() {
 	gobridge.RegisterCallback("listFiles", listFiles)
 	gobridge.RegisterCallback("listRepositories", listRepositories)
 	gobridge.RegisterCallback("listHeadCommits", listHeadCommits)
+	gobridge.RegisterCallback("getHeadCommitsRange", getHeadCommitsRange)
+	gobridge.RegisterCallback("testTypes", testTypes)
 	gobridge.RegisterCallback("testGitClone", testGitClone)
 
 	gobridge.RegisterCallback("add", add)
