@@ -5,7 +5,8 @@ export let activeRepository;
 export let allRepositories;
 
 let repositoryPath = '';
-$: repositoryPath = allRepositories && activeRepository !== undefined ? allRepositories[activeRepository].path : 'no repository selected'; 
+$: repositoryPath = allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
+    allRepositories[activeRepository].path : 'no repository selected'; 
 
 // Development:
 let commits

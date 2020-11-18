@@ -1,7 +1,7 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { uploadFile, listRepositories, listHeadCommits, getHeadCommitsRange } = wasm;
+const { uploadFile, getRepositoryList, listHeadCommits, getHeadCommitsRange } = wasm;
 
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
 import CommitsListingPanel from './CommitsListingPanel.svelte'
@@ -19,11 +19,7 @@ $: manageUploads(droppedFiles)
 let activeRepository = 0;
 
 // Development:
-let allRepositories = [
-    {path: "/test1"},
-    {path: "/test2"},
-    {path: "/test3"},
-];
+let allRepositories = [];
 
 function readFile(entry, successCallback, errorCallback) {
   entry.file(function(file) {
@@ -57,6 +53,10 @@ async function manageUploads(droppedFiles) {
 			(fileInfo, result) => { console.log('error loading file: ', fileInfo.fullPath)}
 		);
 	}
+}
+
+async function updateRepositoryUI() {
+	allRepositories = await getRepositoryList();
 }
 
 async function testRangeCommits() {
@@ -116,7 +116,7 @@ async function testReturnTypes() {
 
 <div>
 	<p>
-		<button type="button" on:click={() => { listRepositories(); }}>Test list repos</button><br/>
+		<button type="button" on:click={() => { updateRepositoryUI(); }}>Test list repos</button><br/>
 		<button type="button" on:click={() => { listHeadCommits("http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"); }}>Test list HEAD commits</button><br/>
 		<button type="button" on:click={() => { testRangeCommits() }}>Test get range HEAD commits</button><br/>
 	</p>
@@ -137,7 +137,7 @@ async function testReturnTypes() {
 			<br/>
 		</p>		
 	</FileUploadPanel>
-	<GoGitClonePanel bind:errorMessage={errorMessage} ></GoGitClonePanel>
+	<GoGitClonePanel updateRepositoryUI={updateRepositoryUI} bind:errorMessage={errorMessage} ></GoGitClonePanel>
 </div>
 
 <GoWasmExample bind:errorMessage={errorMessage} ></GoWasmExample>

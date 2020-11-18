@@ -81,34 +81,36 @@ func listFiles(this js.Value, args []js.Value) (interface{}, error) {
 // For now we keep a map of cloned URIs to Repository objects.
 //
 
-var repositories = map[string](*gogit.Repository){}
+type RepoEntry struct {
+	host      string
+	path      string
+	gogitRepo *gogit.Repository
+}
 
-func listRepositories(this js.Value, args []js.Value) (interface{}, error) {
-	println("Repositories:")
-	for uri, r := range repositories {
-		fmt.Println(uri)
-		cfg, err := r.Config()
+var repositories = make(map[string]*RepoEntry, 0)
+
+func getRepositoryList(this js.Value, args []js.Value) (interface{}, error) {
+	println("getRepositoryList()")
+
+	retRepos := make([]interface{}, len(repositories))
+
+	repoIndex := 0
+	for url, entry := range repositories {
+		cfg, err := entry.gogitRepo.Config()
 		if err != nil {
 			return nil, nil
 		}
-
-		fmt.Println("Author:", cfg.Author.Name, cfg.Author.Email)
-
-		// if f.IsDir() {
-		// 	fmt.Println(f.Name())
-		// 	descriptionPath := f.Name()
-		// 	file, err := fs.Open(descriptionPath)
-		// 	if err != nil {
-		// 		fmt.Println("can't open ", descriptionPath)
-		// 	} else {
-		// 		description := make([]byte, 2048)
-		// 		_, _ = file.Read(description)
-		// 		fmt.Println(f.Name, '-', description)
-		// 	}
-		// }
+		repo := make(map[string]interface{}, 0)
+		repo["url"] = url
+		repo["host"] = entry.host
+		repo["path"] = entry.path
+		repo["author"] = cfg.Author.Name
+		repo["author-email"] = cfg.Author.Email
+		retRepos[repoIndex] = repo
+		repoIndex += 1
 	}
 
-	return 0, nil
+	return retRepos, nil
 }
 
 // Clone a git repository
@@ -142,11 +144,15 @@ func listRepositories(this js.Value, args []js.Value) (interface{}, error) {
 //   JavaScript but this is not a high priority.
 //
 func gitClone(this js.Value, args []js.Value) (interface{}, error) {
+	host := ""
+	path := ""
 	url := ""
 	message := ""
 	println(message, url)
 
-	url = "https://gitlab.com/weblate/libvirt"
+	host = "https://gitlab.com/"
+	path = "weblate/libvirt"
+	url = host + path
 
 	storage := memory.NewStorage()
 	go func() {
@@ -155,7 +161,12 @@ func gitClone(this js.Value, args []js.Value) (interface{}, error) {
 			println("git.Clone() failed: ", err.Error())
 		} else {
 			println("Clone complete...")
-			repositories[url] = r
+			entry := RepoEntry{
+				host,
+				path,
+				r,
+			}
+			repositories[url] = &entry
 			// Retrieve the branch pointed by HEAD
 			ref, err2 := r.Head()
 			if err2 != nil {
@@ -172,6 +183,8 @@ func gitClone(this js.Value, args []js.Value) (interface{}, error) {
 // NOTE: must disable CORS in the browser using a browser plugin
 func testGitClone(this js.Value, args []js.Value) (interface{}, error) {
 	message := ""
+	host := ""
+	path := ""
 	url := ""
 
 	// A small test GitLab repo:
@@ -181,13 +194,16 @@ func testGitClone(this js.Value, args []js.Value) (interface{}, error) {
 	// gitlab.com
 	// WORKS with gitlab.com if browser CORS disabled using a plugin
 	message = "https clone of gitlab repo"
-	url = "https://gitlab.com/saeedareffard1377666/testproject2.git"
+	host = "https://gitlab.com/"
+	path = "saeedareffard1377666/testproject2.git"
 
 	// github.com
 	// WORKS using local-cors-proxy, only for a specific service:
 	// yarn global add local-cors-proxy
 	// lcp --proxyUrl https://github.com
-	url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
+	host = "http://localhost:8010/proxy/"
+	path = "happybeing/p2p-git-portal-poc.git"
+	url = host + path
 
 	// WORKS with isomorphic-git proxy service:
 	// url = "https://cors.isomorphic-git.org/github.com/happybeing/p2p-git-portal-poc.git"
@@ -211,7 +227,13 @@ func testGitClone(this js.Value, args []js.Value) (interface{}, error) {
 			println("git.Clone() failed: ", err.Error())
 		} else {
 			println("Clone complete...")
-			repositories[url] = r
+			entry := RepoEntry{
+				host,
+				path,
+				r,
+			}
+			repositories[url] = &entry
+
 			// Retrieve the branch pointed by HEAD
 			ref, err2 := r.Head()
 			if err2 != nil {
@@ -238,11 +260,12 @@ func listHeadCommits(this js.Value, args []js.Value) (interface{}, error) {
 	println("arg url: ", url)
 	url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
 
-	r, found := repositories[url]
+	entry, found := repositories[url]
 	if !found {
 		println("Unknown repository: ", url)
 		return nil, nil
 	}
+	r := entry.gogitRepo
 
 	// Latest commit on current branch
 	ref, err := r.Head()
@@ -296,11 +319,12 @@ func getHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 	println("arg url: ", url)
 	url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
 
-	r, found := repositories[url]
+	entry, found := repositories[url]
 	if !found {
 		println("Unknown repository: ", url)
 		return nil, nil
 	}
+	r := entry.gogitRepo
 
 	// Latest commit on current branch
 	ref, err := r.Head()
@@ -320,28 +344,28 @@ func getHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 	}
 
 	commits := make([]interface{}, last-first+1)
-	commit_index := 0
-	total_commits := 0
+	commitIndex := 0
+	totalCommits := 0
 
 	err = commitIter.ForEach(func(c *object.Commit) error {
-		total_commits += 1
-		if commit_index >= first && commit_index <= last {
+		totalCommits += 1
+		if commitIndex >= first && commitIndex <= last {
 			commit := make(map[string]interface{}, 0)
 			commit["hash"] = c.Hash.String()
 			commit["message"] = c.Message
 
-			commits[commit_index] = commit
-			commit_index += 1
+			commits[commitIndex] = commit
+			commitIndex += 1
 		}
 		return nil
 	})
 
-	ret_commits := make(map[string]interface{}, 0)
-	ret_commits["length"] = commit_index
-	ret_commits["total_commits"] = total_commits
-	ret_commits["commits"] = commits
+	retCommits := make(map[string]interface{}, 0)
+	retCommits["length"] = commitIndex
+	retCommits["totalCommits"] = totalCommits
+	retCommits["commits"] = commits
 
-	return ret_commits, nil
+	return retCommits, nil
 }
 
 //// Test syscall/js Go/Wasm types
@@ -384,7 +408,7 @@ func main() {
 
 	gobridge.RegisterCallback("uploadFile", uploadFile)
 	gobridge.RegisterCallback("listFiles", listFiles)
-	gobridge.RegisterCallback("listRepositories", listRepositories)
+	gobridge.RegisterCallback("getRepositoryList", getRepositoryList)
 	gobridge.RegisterCallback("listHeadCommits", listHeadCommits)
 	gobridge.RegisterCallback("getHeadCommitsRange", getHeadCommitsRange)
 	gobridge.RegisterCallback("testTypes", testTypes)
