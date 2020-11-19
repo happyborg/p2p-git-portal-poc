@@ -90,8 +90,6 @@ type RepoEntry struct {
 var repositories = make(map[string]*RepoEntry, 0)
 
 func getRepositoryList(this js.Value, args []js.Value) (interface{}, error) {
-	println("getRepositoryList()")
-
 	retRepos := make([]interface{}, len(repositories))
 
 	repoIndex := 0
@@ -120,10 +118,10 @@ func getRepositoryList(this js.Value, args []js.Value) (interface{}, error) {
 //   if you disable CORS in the browser (eg in Chromium with the Allow CORS plugin)
 // - cloning from gitlab.com and github.com works using a proxy. You can
 //   either use a service as in https://cors.isomorphic-git.org/github.com/happybeing/p2p-git-portal-poc.git
-//   or run a local proxy. This one only works for a single repo domain at a time:
-// 		yarn global add local-cors-proxy
-// 		lcp --proxyUrl https://github.com
-//	 	# Then access as https://localhost:8171/github.com/happybeing/p2p-git-portal-poc.git
+//   or run a local proxy. cors-buster WORKS locally:
+// 		git clone https://github.com/wmhilton/cors-buster
+// 		cd cors-buster && yarn && yarn start
+//		# Example "http://localhost:3000/github.com/happybeing/p2p-git-portal-poc.git"
 //
 // Notes:
 // - for large repositories the download can take a long time and in the browser
@@ -140,44 +138,59 @@ func getRepositoryList(this js.Value, args []js.Value) (interface{}, error) {
 //
 // TODO: Issues to open
 // - Implement a way to show progress during a git operation (I think go-git supports this).
-// - CORS issues might be handled better, such as by running a proxy in the browser using
-//   JavaScript but this is not a high priority.
+// - CORS issues might be handled better but this is not a high priority
 //
-func gitClone(this js.Value, args []js.Value) (interface{}, error) {
-	host := ""
-	path := ""
-	url := ""
-	message := ""
-	println(message, url)
+// args []js.Value:
+// [0] - host URI (e.g. 'https://github.com' or 'https://github.com/')
+// [1] - repository path without leading '/' (e.g. 'happybeing/p2p-git-portal-poc')
+// [2] - optional proxied URI (e.g. 'https://localhost:8171/happybeing/p2p-git-portal-poc')
+// [3] - optional callback(error) called on completion with a null value on success, or an error message
+func cloneRepository(this js.Value, args []js.Value) (interface{}, error) {
+	host := args[0].String()
+	if host[len(host)-1] != '/' {
+		host = host + "/"
+	}
 
-	host = "https://gitlab.com/"
-	path = "weblate/libvirt"
-	url = host + path
+	path := args[1].String()
+	var proxiedURI = ""
+	if len(args) > 2 {
+		proxiedURI = args[2].String()
+	}
+
+	var callback js.Value
+	if len(args) > 3 {
+		callback = args[3]
+	}
+
+	url := host + path
+	if len(proxiedURI) > 0 {
+		url = proxiedURI
+	}
+
+	// println("cloneRepository() with url:", url)
+	// println("host:", host)
+	// println("path:", path)
+	// println("proxiedURI:", proxiedURI)
 
 	storage := memory.NewStorage()
+	var err error
 	go func() {
 		r, err := git.Clone(storage, fs, &git.CloneOptions{URL: url})
 		if err != nil {
 			println("git.Clone() failed: ", err.Error())
+			callback.Invoke(err.Error())
 		} else {
-			println("Clone complete...")
 			entry := RepoEntry{
 				host,
 				path,
 				r,
 			}
 			repositories[url] = &entry
-			// Retrieve the branch pointed by HEAD
-			ref, err2 := r.Head()
-			if err2 != nil {
-				println("r.Head() failed: ", err2.Error())
-			} else {
-				println("Retrieved head, ref: ", ref)
-			}
+			callback.Invoke(js.Null())
 		}
 	}()
 
-	return nil, nil
+	return nil, err
 }
 
 // NOTE: must disable CORS in the browser using a browser plugin
@@ -408,17 +421,14 @@ func main() {
 
 	gobridge.RegisterCallback("uploadFile", uploadFile)
 	gobridge.RegisterCallback("listFiles", listFiles)
-	gobridge.RegisterCallback("getRepositoryList", getRepositoryList)
 	gobridge.RegisterCallback("listHeadCommits", listHeadCommits)
-	gobridge.RegisterCallback("getHeadCommitsRange", getHeadCommitsRange)
 	gobridge.RegisterCallback("testTypes", testTypes)
 	gobridge.RegisterCallback("testGitClone", testGitClone)
 
-	gobridge.RegisterCallback("add", add)
-	gobridge.RegisterCallback("gitClone", gitClone)
+	gobridge.RegisterCallback("cloneRepository", cloneRepository)
+	gobridge.RegisterCallback("getRepositoryList", getRepositoryList)
+	gobridge.RegisterCallback("getHeadCommitsRange", getHeadCommitsRange)
 	gobridge.RegisterCallback("raiseError", err)
-	gobridge.RegisterValue("someValue", "Hello World")
-	gobridge.RegisterValue("numericValue", 123)
 
 	ready = true
 	println("Web Assembly is ready")

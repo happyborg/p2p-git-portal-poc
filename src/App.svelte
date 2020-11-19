@@ -8,7 +8,6 @@ import CommitsListingPanel from './CommitsListingPanel.svelte'
 
 import FileUploadPanel from './test/FileUploadPanel.svelte'
 import GoGitClonePanel from './test/GoGitClonePanel.svelte'
-import GoWasmExample from './test/GoWasmExample.svelte';
 
 let droppedFiles = [];
 let uploadingFile;
@@ -140,6 +139,6 @@ async function testReturnTypes() {
 	<GoGitClonePanel updateRepositoryUI={updateRepositoryUI} bind:errorMessage={errorMessage} ></GoGitClonePanel>
 </div>
 
-<GoWasmExample bind:errorMessage={errorMessage} ></GoWasmExample>
+<!-- <GoWasmExample bind:errorMessage={errorMessage} ></GoWasmExample> -->
 </main>
 
