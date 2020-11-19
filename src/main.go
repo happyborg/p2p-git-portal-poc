@@ -84,6 +84,7 @@ func listFiles(this js.Value, args []js.Value) (interface{}, error) {
 type RepoEntry struct {
 	host      string
 	path      string
+	url       string
 	gogitRepo *gogit.Repository
 }
 
@@ -93,15 +94,16 @@ func getRepositoryList(this js.Value, args []js.Value) (interface{}, error) {
 	retRepos := make([]interface{}, len(repositories))
 
 	repoIndex := 0
-	for url, entry := range repositories {
+	for path, entry := range repositories {
 		cfg, err := entry.gogitRepo.Config()
 		if err != nil {
 			return nil, nil
 		}
 		repo := make(map[string]interface{}, 0)
-		repo["url"] = url
+		repo["path"] = path
 		repo["host"] = entry.host
 		repo["path"] = entry.path
+		repo["url"] = entry.url
 		repo["author"] = cfg.Author.Name
 		repo["author-email"] = cfg.Author.Email
 		retRepos[repoIndex] = repo
@@ -183,9 +185,10 @@ func cloneRepository(this js.Value, args []js.Value) (interface{}, error) {
 			entry := RepoEntry{
 				host,
 				path,
+				url,
 				r,
 			}
-			repositories[url] = &entry
+			repositories[path] = &entry
 			callback.Invoke(js.Null())
 		}
 	}()
@@ -243,9 +246,10 @@ func testGitClone(this js.Value, args []js.Value) (interface{}, error) {
 			entry := RepoEntry{
 				host,
 				path,
+				url,
 				r,
 			}
-			repositories[url] = &entry
+			repositories[path] = &entry
 
 			// Retrieve the branch pointed by HEAD
 			ref, err2 := r.Head()
@@ -265,17 +269,17 @@ func testGitClone(this js.Value, args []js.Value) (interface{}, error) {
 // showcase example: https://github.com/go-git/go-git/blob/master/_examples/showcase/main.go
 
 // args[]:
-//	[0] url - remote URL is used to identify a cloned repository (later will be a local identifier)
+//	[0] path of a cloned repository
 
 func listHeadCommits(this js.Value, args []js.Value) (interface{}, error) {
-	url := args[0].String()
+	path := args[0].String()
 
-	println("arg url: ", url)
-	url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
+	println("arg path: ", path)
+	// path = "happybeing/p2p-git-portal-poc.git"
 
-	entry, found := repositories[url]
+	entry, found := repositories[path]
 	if !found {
-		println("Unknown repository: ", url)
+		println("Unknown repository: ", path)
 		return nil, nil
 	}
 	r := entry.gogitRepo
@@ -310,12 +314,12 @@ func listHeadCommits(this js.Value, args []js.Value) (interface{}, error) {
 }
 
 // args[]:
-//	[0] url - remote URL is used to identify a cloned repository (later will be a local identifier)
+//	[0] path - local repo path of a cloned repository (later will be a local identifier)
 //	[1] first - index of first commit starting at zero
 //  [2] last - index of last commit (inclusive, so to return just the first commit first=last=0)
 
 func getHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
-	url := args[0].String()
+	path := args[0].String()
 	first := args[1].Int()
 	last := args[2].Int()
 
@@ -329,12 +333,12 @@ func getHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 		return nil, err
 	}
 
-	println("arg url: ", url)
-	url = "http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"
+	println("arg path: ", path)
+	// path = "saeedareffard1377666/testproject2.git"
 
-	entry, found := repositories[url]
+	entry, found := repositories[path]
 	if !found {
-		println("Unknown repository: ", url)
+		println("Unknown repository: ", path)
 		return nil, nil
 	}
 	r := entry.gogitRepo
@@ -376,7 +380,7 @@ func getHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 	retCommits := make(map[string]interface{}, 0)
 	retCommits["length"] = commitIndex
 	retCommits["totalCommits"] = totalCommits
-	retCommits["commits"] = commits
+	retCommits["commits"] = commits[0 : commitIndex-1]
 
 	return retCommits, nil
 }

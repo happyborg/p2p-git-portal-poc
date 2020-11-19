@@ -60,7 +60,7 @@ async function updateRepositoryUI() {
 
 async function testRangeCommits() {
 	console.log('testRangeCommits()')
-	let result = await getHeadCommitsRange("http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git", 0, 100);
+	let result = await getHeadCommitsRange("saeedareffard1377666/testproject2.git", 0, 100);
 	console.dir(result);
 }
 
