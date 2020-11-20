@@ -95,6 +95,9 @@ If you have problems, open the web browser console to look for any error message
 
 Note: drag and drop of files is not properly supported yet.
 
+### Screenshot
+<img src="./gitportal-poc-stage1.svg"/>
+
 ### Development
 Hot reloading generally works well, but if you have problems getting rid of a compilation error after you think you've fixed it, restart the `yarn dev` command.
 
