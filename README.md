@@ -72,7 +72,31 @@ yarn && yarn build
 yarn dev
 # Open app in the browser by visiting localhost:5000
 ```
-The above is all that's needed to test and for most development. Hot reloading generally works well, but if you have problems getting rid of a compilation error after you think you've fixed it, restart the `yarn dev` command.
+
+### Setup a CORS Proxy
+To clone repositories you will need a way to overcome CORS errors because we're working entirely within the web browser. You can try disabling this with a browser plugin, and this works with some services but not github.
+
+So I recommend using a CORS proxy. You can set one up locally as follows:
+```bash
+	git clone https://github.com/wmhilton/cors-buster
+	cd cors-buster && yarn && yarn start
+```
+
+### Testing
+The above is all that's needed to test and for most development.
+
+Make sure you have the proxy running and make sure the proxy URI is set correctly in the UI. Now click "Clone". 
+
+A sample repository is already set in the UI, and should be cloned in a few seconds. Large repositories will of course take much longer, so be prepared to wait!
+
+When cloning is finished this the list of repositories on the top left, and the list of commits on the right will be updated. If you have more than one repository cloned, you can click on the list (top left) to show the commits for that repository.
+
+If you have problems, open the web browser console to look for any error messages and feel free to open an issue if you have difficulties.
+
+Note: drag and drop of files is not properly supported yet.
+
+### Development
+Hot reloading generally works well, but if you have problems getting rid of a compilation error after you think you've fixed it, restart the `yarn dev` command.
 
 If you want to make changes to the go-git/go-billy, git-bug or the Go/wasm plugin, you need to be set up with local versions as described next, but you should not need to do this.
 
