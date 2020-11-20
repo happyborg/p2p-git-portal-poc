@@ -1,6 +1,6 @@
 # p2p Git Portal - Proof of Concept
 
-The goal is a github like portal which can be hosted on peer-to-peer or static storage, initially targeting Safe Network. For example, a Safe Network in-browser app using `git-bug` and `git.go` libraries to create a realistic alternative to github.
+The goal is a github like portal which can be hosted on peer-to-peer or static storage, initially targeting Safe Network. For example, a Safe Network in-browser app using `git-bug` and `go-git` libraries to create a realistic alternative to github.
 
 Using `git-bug` as a library will add support for issues (and later pull requests) to a `git` repo without polluting your commit history, with no need for server side hosting no service provider.
 
@@ -23,9 +23,9 @@ Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there'
 
 ## Current Status
 
-**WORK IN PROGRESS** - The setup and build instructions below are incomplete so check with me if you want something which builds and can be tested (I have this but you'll need more information).
+**WORK IN PROGRESS** - everything in the above list is working apart for the last item: use git-bug to display and edit issues/comments.
 
-I'm currently getting the various parts working: go-git and go-billy are available in the browser so I need to tidy this up, prove it is working as needed and add some things to help build on this.
+Remaining activity for the proof-of-concept:
 
 TODO:
 
@@ -35,11 +35,7 @@ TODO:
 
 [ ] add happybeing/git-bug to the poc compilation (as with happybeing/go-git) (see [issue #2](https://github.com/happybeing/p2p-git-portal-poc/issues/2))
 
-[ ] ACTIVE WIP: add file upload UI to the browser, storing files using go-billy/memfs
-
 [ ] add instructions for setting up local forks of go-git, go-billy and git-bug
-
-[ ] specify/build UI to test go-git repo operations on git repo uploaded to go-billy/memfs
 
 #### HTML / CSS Work
 The app in branch `main` runs and uses default Svelte HTML/CSS styling.
@@ -52,45 +48,33 @@ Later we can differentiate for a more community driven and oriented feature set 
 
 At some point we may want to break away from being a github clone because the aims and direction of the two projects are different in key respects, so we should also be thinking about re-inventing the git portal without the goal of centralisation, but of re-sharing the value created by the community in whatever ways the community can benefit.
 
-## Development Setup
+## Setup
 
 ### Pre-requisites
-Tested using Golang v1.13, `node` v14.14 and `yarn` v1.22. You could use `npm` for linking but I use yarn for this as it seems more reliable.
+Install Golang v1.13, `node` v14.14 and `yarn` v1.22. You could use `npm`, I just prefer `yarn`. I recommend using `nvm` (node version manager to install `node`).
 
-### Clone the plugin and this template
+### Get the Code
 
-**NOTE** - these instructions are incomplete - get in touch if you want something which works.
-
-TODO: add instructions for setting up local forks of go-git, go-billy and git-bug.
-
-Note: the directories need to be adjacent in order to work as is. If not you will have to modify the path to `gobridge` in your `main.go` import. I'm not sure why this is needed but maybe the plugin wasn't finalised.
-
-If you have `node` and `yarn`, on Linux you should be able to just copy the following and paste it into your terminal.
+If you have `node` and `yarn` installed, on Linux you should be able to just copy the following and paste it into your terminal.
 ``` bash
 # Make sure GOROOT and GOPATH are set in the terminal, for example:
 export GOROOT=`go env GOROOT`
 export GOPATH=`go env GOPATH`
 
-# Get the plugin
-mkdir -p ~/src/wasm_test
-cd ~/src/wasm_test
-git clone https://github.com/happybeing/webpack-golang-wasm-async-loader
-cd webpack-golang-wasm-async-loader
-npm install && npm run build
-yarn link
-
-# Get the app template
-cd ~/src/wasm_test
+# Get the app
+mkdir -p ~/src/go_wasm
+cd ~/src/go_wasm
 git clone https://github.com/happybeing/p2p-git-portal-poc
 cd  p2p-git-portal-poc
-yarn link golang-wasm-async-loader
 yarn && yarn build
 
 # If all looks good, start the app
 yarn dev
 # Open app in the browser by visiting localhost:5000
 ```
-The plugin directory and its package name are different, so you need to use the `yarn link` command as shown.
+The above is all that's needed to test and for most development. Hot reloading generally works well, but if you have problems getting rid of a compilation error after you think you've fixed it, restart the `yarn dev` command.
+
+If you want to make changes to the go-git/go-billy, git-bug or the Go/wasm plugin, you need to be set up with local versions as described next, but you should not need to do this.
 
 ### Contributions
 If you wish to build or contribute to the code, get in touch and I'll add some build instructions as it requires some special setup using my fork of a webpack wasm plugin. Not hard, but not obvious!

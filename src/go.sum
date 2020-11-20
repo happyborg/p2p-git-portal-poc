@@ -19,6 +19,14 @@ github.com/go-git/go-git-fixtures/v4 v4.0.2-0.20200613231340-f56387b50c12/go.mod
 github.com/go-git/go-git/v5 v5.2.0 h1:YPBLG/3UK1we1ohRkncLjaXWLW+HKp5QNM/jTli2JgI=
 github.com/go-git/go-git/v5 v5.2.0/go.mod h1:kh02eMX+wdqqxgNMEyq8YgwlIOsDOa9homkUq1PoTMs=
 github.com/google/go-cmp v0.3.0/go.mod h1:8QqcDgzrUqlUb/G2PQTWiueGozuR1884gddMywk6iLU=
+github.com/happybeing/go-billy/v5 v5.0.0 h1:Wl0qK3S+PejX4ZRfcMsYO5sLNYv6p68g/S1ecMz/2B4=
+github.com/happybeing/go-billy/v5 v5.0.0/go.mod h1:pmpqyWchKfYfrkb/UVH4otLvyi/5gJlGI4Hb3ZqZ3W0=
+github.com/happybeing/go-billy/v5 v5.0.1 h1:Tv96jFC9wegcnsiXE/zAW04CSxx4P7fovA56ow53eM0=
+github.com/happybeing/go-billy/v5 v5.0.1/go.mod h1:pmpqyWchKfYfrkb/UVH4otLvyi/5gJlGI4Hb3ZqZ3W0=
+github.com/happybeing/go-git/v5 v5.2.0 h1:uqAcT8nRCZgHxY4n3KFZkhkAdzn1FtkrB4GO4qdT/JQ=
+github.com/happybeing/go-git/v5 v5.2.0/go.mod h1:kh02eMX+wdqqxgNMEyq8YgwlIOsDOa9homkUq1PoTMs=
+github.com/happybeing/go-git/v5 v5.2.1 h1:/Pzl3aaBXWqCn4bTYr1XIAYT+vaUIUl/AtWW0QXGOhU=
+github.com/happybeing/go-git/v5 v5.2.1/go.mod h1:zgzhwk/fPgPGMbb8D1730EGgD0Hh2OmMHEnz3eKSTgw=
 github.com/happybeing/webpack-golang-wasm-async-loader v0.1.0 h1:eeWnIqKG8FRvKI6yuPXFQTEOrrXIn5tU3t2QsiG0JxU=
 github.com/happybeing/webpack-golang-wasm-async-loader v0.1.0/go.mod h1:9wI2ABJhgsN74CipgUKAiCbU1YjXTGmD+BUMEuTvVDk=
 github.com/imdario/mergo v0.3.9 h1:UauaLniWCFHWd+Jp9oCEkTBj8VO/9DKg3PV3VCNMDIg=
