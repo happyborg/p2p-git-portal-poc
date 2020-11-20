@@ -380,7 +380,7 @@ func getHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 	retCommits := make(map[string]interface{}, 0)
 	retCommits["length"] = commitIndex
 	retCommits["totalCommits"] = totalCommits
-	retCommits["commits"] = commits[0 : commitIndex-1]
+	retCommits["commits"] = commits[0:commitIndex]
 
 	return retCommits, nil
 }
