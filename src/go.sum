@@ -11,6 +11,7 @@ github.com/flynn/go-shlex v0.0.0-20150515145356-3f9db97f8568/go.mod h1:xEzjJPgXI
 github.com/gliderlabs/ssh v0.2.2/go.mod h1:U7qILu1NlMHj9FlMhZLlkCdDnU1DBEAqr0aevW3Awn0=
 github.com/go-git/gcfg v1.5.0 h1:Q5ViNfGF8zFgyJWPqYwA7qGFoMTEiBmdlkcfRmpIMa4=
 github.com/go-git/gcfg v1.5.0/go.mod h1:5m20vg6GwYabIxaOonVkTdrILxQMpEShl1xiMF4ua+E=
+github.com/go-git/go-billy v4.2.0+incompatible h1:Z6QtVXd5tjxUtcODLugkJg4WaZnGg13CD8qB9pr+7q0=
 github.com/go-git/go-billy/v5 v5.0.0 h1:7NQHvd9FVid8VL4qVUMm8XifBK+2xCoZ2lSk0agRrHM=
 github.com/go-git/go-billy/v5 v5.0.0/go.mod h1:pmpqyWchKfYfrkb/UVH4otLvyi/5gJlGI4Hb3ZqZ3W0=
 github.com/go-git/go-git v4.7.0+incompatible h1:+W9rgGY4DOKKdX2x6HxSR7HNeTxqiKrOvKnuittYVdA=
@@ -29,6 +30,8 @@ github.com/happybeing/go-git/v5 v5.2.1 h1:/Pzl3aaBXWqCn4bTYr1XIAYT+vaUIUl/AtWW0Q
 github.com/happybeing/go-git/v5 v5.2.1/go.mod h1:zgzhwk/fPgPGMbb8D1730EGgD0Hh2OmMHEnz3eKSTgw=
 github.com/happybeing/webpack-golang-wasm-async-loader v0.1.0 h1:eeWnIqKG8FRvKI6yuPXFQTEOrrXIn5tU3t2QsiG0JxU=
 github.com/happybeing/webpack-golang-wasm-async-loader v0.1.0/go.mod h1:9wI2ABJhgsN74CipgUKAiCbU1YjXTGmD+BUMEuTvVDk=
+github.com/happybeing/webpack-golang-wasm-async-loader/gobridge v0.0.0-20201121121723-6f1ca5446694 h1:muwb+7X9IIGrLmEofB1+fK9D6jP56vM9w+NrnHQ7EUo=
+github.com/happybeing/webpack-golang-wasm-async-loader/gobridge v0.0.0-20201121121723-6f1ca5446694/go.mod h1:ADm3WtCtL+5PPYEbcxjz8W/SI0sDzDZLBxgvy2jvNHA=
 github.com/imdario/mergo v0.3.9 h1:UauaLniWCFHWd+Jp9oCEkTBj8VO/9DKg3PV3VCNMDIg=
 github.com/imdario/mergo v0.3.9/go.mod h1:2EnlNZ0deacrJVfApfmtdGgDfMuh/nq6Ok1EcJh5FfA=
 github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 h1:BQSFePA1RWJOlocH6Fxy8MmwDt+yVQYULKfN0RoTN8A=
