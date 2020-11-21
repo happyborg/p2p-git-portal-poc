@@ -5,7 +5,7 @@
   "license": "GPL-3.0-or-later",
   "author": "happybeing",
   "dependencies": {
-    "golang-wasm-async-loader2": "^1.0.2",
+    "golang-wasm-async-loader2": "^1.0.6",
     "svelte": "^3.29.4"
   },
   "devDependencies": {
