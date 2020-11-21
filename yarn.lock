@@ -1773,10 +1773,10 @@ globby@^6.1.0:
     pify "^2.0.0"
     pinkie-promise "^2.0.0"
 
-golang-wasm-async-loader2@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/golang-wasm-async-loader2/-/golang-wasm-async-loader2-1.0.0.tgz#cf9275d2104e0f1fd607b3818e9190d13028dbec"
-  integrity sha512-caZ7/5KBPza+raYaNAl0WW2IrXbr81XmTLEo5bwFpSooHhtL4I99XC1BEFt0rBrsC2iwGhYBj04aJbjTV1abtw==
+golang-wasm-async-loader2@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/golang-wasm-async-loader2/-/golang-wasm-async-loader2-1.0.2.tgz#b050a2a57a9599908e71c8eff3e98ebde929a067"
+  integrity sha512-mEROG0iW6YADLLMpn+aCILDyjIELfLG16tyLZ9Qh6RhPexwSandsJFk5iRTok1lF5ivYPSTEFzaHjdnWnaCH2A==
   dependencies:
     "@types/webpack" "^4.4.23"
 
