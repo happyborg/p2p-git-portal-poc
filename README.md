@@ -70,7 +70,7 @@ yarn && yarn build
 
 # If all looks good, start the app
 yarn dev
-# Open app in the browser by visiting localhost:5000
+# Open app in the browser by visiting localhost:8080
 ```
 
 ### Setup a CORS Proxy
