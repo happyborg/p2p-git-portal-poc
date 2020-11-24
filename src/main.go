@@ -402,21 +402,7 @@ func testTypes(this js.Value, args []js.Value) (interface{}, error) {
 	return person, nil
 }
 
-//// Redundant tests retained temporarily:
-
-func add(this js.Value, args []js.Value) (interface{}, error) {
-	ret := 0
-	for _, item := range args {
-		val := item.Int()
-		ret += val
-	}
-
-	return ret, nil
-}
-
-func err(this js.Value, args []js.Value) (interface{}, error) {
-	return nil, errors.New("This is an error")
-}
+////// Go/wasm initialisation
 
 var ready = false
 
@@ -432,7 +418,6 @@ func main() {
 	gobridge.RegisterCallback("cloneRepository", cloneRepository)
 	gobridge.RegisterCallback("getRepositoryList", getRepositoryList)
 	gobridge.RegisterCallback("getHeadCommitsRange", getHeadCommitsRange)
-	gobridge.RegisterCallback("raiseError", err)
 
 	ready = true
 	println("Web Assembly is ready")

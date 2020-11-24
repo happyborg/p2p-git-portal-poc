@@ -6,7 +6,7 @@ require (
 	github.com/go-git/go-billy/v5 v5.0.0
 	github.com/go-git/go-git v4.7.0+incompatible // indirect
 	github.com/go-git/go-git/v5 v5.2.0
-	github.com/happybeing/webpack-golang-wasm-async-loader/gobridge v0.0.0-20201121121723-6f1ca5446694 // indirect
+	github.com/happybeing/webpack-golang-wasm-async-loader/gobridge v0.0.0-20201121121723-6f1ca5446694
 	// github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
 	gopkg.in/src-d/go-git.v4 v4.13.1 // indirect
 )
