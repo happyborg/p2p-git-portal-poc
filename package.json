@@ -1,15 +1,15 @@
 {
-  "name": "svelte-go-poc",
+  "name": "p2p-git-portal-poc",
   "version": "1.0.0",
-  "description": "Proof of concept Golang wasm app",
+  "description": "Proof of concept p2p git portal",
   "license": "GPL-3.0-or-later",
   "author": "happybeing",
   "dependencies": {
-    "golang-wasm-async-loader2": "^1.0.6",
     "svelte": "^3.29.4"
   },
   "devDependencies": {
     "css-loader": "^2.1.0",
+    "golang-wasm-async-loader2": "1.1.0",
     "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^1.2.1",
     "source-map-loader": "^0.2.4",
@@ -24,6 +24,9 @@
     "dev": "webpack-dev-server --content-base public"
   },
   "keywords": [
+    "p2p",
+    "git",
+    "gitportal",
     "svelte",
     "golang",
     "wasm"

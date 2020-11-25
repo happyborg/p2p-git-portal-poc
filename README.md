@@ -51,7 +51,10 @@ At some point we may want to break away from being a github clone because the ai
 ## Setup
 
 ### Pre-requisites
-Install Golang v1.13, `node` v14.14 and `yarn` v1.22. You could use `npm`, I just prefer `yarn`. I recommend using `nvm` (node version manager to install `node`).
+
+Install Golang v1.15, `node` v14.14 and `yarn` v1.22. You could use `npm`, I just prefer `yarn`.
+
+I recommend using `nvm` (node version manager to install `node`) and `gvm` (Go version manager to install Golang) as it makes it easier to install, upgrade and switch between versions of these dependencies.
 
 ### Get the Code
 
