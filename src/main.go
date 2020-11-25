@@ -9,19 +9,19 @@ import (
 	"strings"
 	"syscall/js"
 
-	"github.com/MichaelMure/git-bug/cache"
 	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
 
 	// OK FOR CLI if I have gobridge/go.mod containing:
 	// module github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
 	// go 1.13
 
-	"github.com/MichaelMure/git-bug/cache"
 	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/storage/memory"
+
+	"github.com/MichaelMure/git-bug/cache"
 )
 
 var global = js.Global()
@@ -408,11 +408,12 @@ func testTypes(this js.Value, args []js.Value) (interface{}, error) {
 ////// git-bug
 
 func testGitBug(this js.Value, args []js.Value) (interface{}, error) {
-	cache, err := cache.NewMultiRepoCache()
-	if err != nil {
-		return nil, err
+	cache := cache.NewMultiRepoCache()
+	if cache == nil {
+		println("testGitBug() FAILED to create cache")
+	} else {
+		println("testGitBug() created multi-repo cache!", cache)
 	}
-	println("testGitBug() created multi-repo cache!", cache)
 	return nil, nil
 }
 

@@ -1,7 +1,7 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { uploadFile, getRepositoryList, listHeadCommits, getHeadCommitsRange } = wasm;
+const { uploadFile, getRepositoryList, listHeadCommits, getHeadCommitsRange, testGitBug } = wasm;
 
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
 import CommitsListingPanel from './CommitsListingPanel.svelte'
@@ -115,7 +115,7 @@ async function testReturnTypes() {
 
 <div>
 	<p>
-		<button type="button" on:click={() => { updateRepositoryUI(); }}>Test list repos</button><br/>
+		<button type="button" on:click={() => { testGitBug(); }}>Test git-bug</button><br/>
 		<button type="button" on:click={() => { listHeadCommits("http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"); }}>Test list HEAD commits</button><br/>
 		<button type="button" on:click={() => { testRangeCommits() }}>Test get range HEAD commits</button><br/>
 	</p>
