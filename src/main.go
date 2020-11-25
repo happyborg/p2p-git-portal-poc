@@ -9,11 +9,14 @@ import (
 	"strings"
 	"syscall/js"
 
+	"github.com/MichaelMure/git-bug/cache"
 	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
 
 	// OK FOR CLI if I have gobridge/go.mod containing:
 	// module github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
 	// go 1.13
+
+	"github.com/MichaelMure/git-bug/cache"
 	"github.com/go-git/go-billy/v5/memfs"
 	"github.com/go-git/go-git/v5"
 	gogit "github.com/go-git/go-git/v5"
@@ -402,6 +405,17 @@ func testTypes(this js.Value, args []js.Value) (interface{}, error) {
 	return person, nil
 }
 
+////// git-bug
+
+func testGitBug(this js.Value, args []js.Value) (interface{}, error) {
+	cache, err := cache.NewMultiRepoCache()
+	if err != nil {
+		return nil, err
+	}
+	println("testGitBug() created multi-repo cache!", cache)
+	return nil, nil
+}
+
 ////// Go/wasm initialisation
 
 var ready = false
@@ -419,6 +433,7 @@ func main() {
 	gobridge.RegisterCallback("getRepositoryList", getRepositoryList)
 	gobridge.RegisterCallback("getHeadCommitsRange", getHeadCommitsRange)
 
+	gobridge.RegisterCallback("testGitBug", testGitBug)
 	ready = true
 	println("Web Assembly is ready")
 	<-c // Makes the Go process wait until we want it to end
