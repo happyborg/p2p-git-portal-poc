@@ -22,4 +22,9 @@ replace github.com/MichaelMure/git-bug => /home/mrh/src/go/src/github.com/happyb
 
 // replace github.com/go-git/go-git/v5 => /home/mrh/src/go/src/github.com/happybeing/go-git
 // replace github.com/go-git/go-billy/v5 => /home/mrh/src/go/src/github.com/happybeing/go-billy
+
+// To develop with a local version of the plugin you need to: 
+// - uncomment the following 'replace'
+// - `yarn link` in your local development copy of the plugin
+// - `yarn link golang-wasm-async-loader2` in ./p2p-git-portal-poc
 // replace github.com/happybeing/webpack-golang-wasm-async-loader/gobridge => /home/mrh/src/go/src/github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
