@@ -106,6 +106,21 @@ Hot reloading generally works well, but if you have problems getting rid of a co
 
 If you want to make changes to the go-git/go-billy, git-bug or the Go/wasm plugin, you need to be set up with local versions as described next, but you should not need to do this.
 
+### Code Documentation
+You can view **developer documentation** for local code and package dependencies in a web browser, showing functions, types etc. for each package.
+
+To view developer documentation:
+
+- Install `godoc` using `go get` / `go install`. Linux users may install directly from their package repositories but this may not be as up-to-date (e.g. `sudo apt install godoc`).
+
+In the directory next to the `go.mod` of the code you wish to browser (e.g. `./p2p-git-portal-poc/src`), run the following but be patient as first time it takes a while to generate the docs and doesn't show any progress in the terminal.
+```bash
+# This updates the documentation and then acts as a web server
+godoc -http=":6060"
+```
+Then visit `http://localhost:6060` and click 'Packages' and search the page for the package you want to browse (e.g. `git-bug`)
+
+
 ### Contributions
 If you wish to build or contribute to the code, get in touch and I'll add some build instructions as it requires some special setup using my fork of a webpack wasm plugin. Not hard, but not obvious!
 
