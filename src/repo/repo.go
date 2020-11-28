@@ -27,7 +27,7 @@ type Entry struct {
 	GogitRepo *gogit.Repository
 }
 
-var fs = memfs.New()
+var Filesystem = memfs.New()
 var AllRepositories = make(map[string]*Entry, 0)
 
 func GetRepositoryList(this js.Value, args []js.Value) (interface{}, error) {
@@ -118,7 +118,7 @@ func CloneRepository(this js.Value, args []js.Value) (interface{}, error) {
 	storage := memory.NewStorage()
 	var err error
 	go func() {
-		r, err := gogit.Clone(storage, fs, &gogit.CloneOptions{URL: url})
+		r, err := gogit.Clone(storage, Filesystem, &gogit.CloneOptions{URL: url})
 		if err != nil {
 			// if true {
 			println("gogit.Clone() failed: ", err.Error())
@@ -174,7 +174,7 @@ func GitCloneTest(this js.Value, args []js.Value) (interface{}, error) {
 	storage := memory.NewStorage()
 	// Note: can't wait on this or go will exit due to a deadlock (as Clone() uses http.Get())
 	go func() {
-		r, err := gogit.Clone(storage, fs, &gogit.CloneOptions{
+		r, err := gogit.Clone(storage, Filesystem, &gogit.CloneOptions{
 			// Auth: &http.BasicAuth{
 			// 	Username: "noname", // This can be anything except an empty string
 			// 	Password: token,

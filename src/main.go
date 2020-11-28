@@ -10,21 +10,10 @@ import (
 	"github.com/happybeing/p2p-git-portal-poc/src/repo"
 	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
 
-	// "github.com/happybeing/p2p-git-portal-poc/src/repo"
-	// repo "./repo"
-
-	// OK FOR CLI if I have gobridge/go.mod containing:
-	// module github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
-	// go 1.13
-
-	"github.com/go-git/go-billy/v5/memfs"
-
 	"github.com/MichaelMure/git-bug/cache"
 )
 
 var global = js.Global()
-
-var fs = memfs.New()
 
 func uploadFile(this js.Value, args []js.Value) (interface{}, error) {
 	// if !ready {
@@ -41,7 +30,7 @@ func uploadFile(this js.Value, args []js.Value) (interface{}, error) {
 
 	fmt.Println("GO uploading: ", fullPath, n)
 
-	dst, err := fs.Create(fullPath)
+	dst, err := repo.Filesystem.Create(fullPath)
 	if err != nil {
 		return nil, err
 	}
@@ -59,8 +48,8 @@ func uploadFile(this js.Value, args []js.Value) (interface{}, error) {
 }
 
 func listFiles(this js.Value, args []js.Value) (interface{}, error) {
-	listing, err := fs.ReadDir("testrepo")
-	// listing, err := fs.ReadDir(args[0].String())
+	listing, err := repo.Filesystem.ReadDir("testrepo")
+	// listing, err := repo.Filesystem.ReadDir(args[0].String())
 	if err != nil {
 		log.Fatal(err)
 	}
