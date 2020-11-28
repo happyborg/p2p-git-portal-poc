@@ -42,9 +42,9 @@ async function updateCommitsListing(repoPath) {
 </script>
 
 <style>
-.highlight {
+/* .highlight {
     font-weight: bold;
-}
+} */
 
 </style>
 <div>
