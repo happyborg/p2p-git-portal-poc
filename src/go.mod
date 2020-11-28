@@ -5,11 +5,11 @@ go 1.13
 require (
 	github.com/MichaelMure/git-bug v0.0.0-20201123161810-b9961535505b
 	github.com/go-git/go-billy/v5 v5.0.0
-	github.com/go-git/go-git v4.7.0+incompatible // indirect
+	github.com/go-git/go-git v4.7.0+incompatible
 	github.com/go-git/go-git/v5 v5.2.0
+	github.com/happybeing/p2p-git-portal-poc/src/repo v0.0.0
+
 	github.com/happybeing/webpack-golang-wasm-async-loader/gobridge v0.0.0-20201125123737-917b0db1c9a8
-// github.com/happybeing/webpack-golang-wasm-async-loader/gobridge v0.0.0-20201121121723-6f1ca5446694
-// gopkg.in/src-d/go-git.v4 v4.13.1 // indirect
 )
 
 // Use forks with Go/wasm support
@@ -21,6 +21,8 @@ replace github.com/go-git/go-billy/v5 => github.com/happybeing/go-billy/v5 v5.0.
 replace github.com/MichaelMure/git-bug => /home/mrh/src/go/src/github.com/happybeing/git-bug
 
 replace github.com/99designs/keyring => /home/mrh/src/go/src/github.com/happybeing/keyring
+
+replace github.com/happybeing/p2p-git-portal-poc/src/repo => /home/mrh/src/wasm/p2p-git-portal-poc/src/repo
 
 // Dependencies of git-bug which require tweaks for wasm
 // replace github.com/99designs/keyring => /home/mrh/src/go/src/github.com/happybeing/keyring

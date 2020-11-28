@@ -9,7 +9,11 @@ import (
 	"strings"
 	"syscall/js"
 
+	"github.com/happybeing/p2p-git-portal-poc/src/repo"
 	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
+
+	// "github.com/happybeing/p2p-git-portal-poc/src/repo"
+	// repo "./repo"
 
 	// OK FOR CLI if I have gobridge/go.mod containing:
 	// module github.com/happybeing/webpack-golang-wasm-async-loader/gobridge
@@ -388,6 +392,23 @@ func getHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 	return retCommits, nil
 }
 
+//// git-bug gogit.Repository tests
+
+func testGitBug(this js.Value, args []js.Value) (interface{}, error) {
+	cache := cache.NewMultiRepoCache()
+	if cache == nil {
+		println("testGitBug() FAILED to create cache")
+	} else {
+		println("testGitBug() created multi-repo cache!", cache)
+	}
+	return nil, nil
+}
+
+func testRepoInit(this js.Value, args []js.Value) (interface{}, error) {
+	println("testRepoInit()...")
+	return nil, repo.PocRepoInitialise()
+}
+
 //// Test syscall/js Go/Wasm types
 
 func testTypes(this js.Value, args []js.Value) (interface{}, error) {
@@ -403,18 +424,6 @@ func testTypes(this js.Value, args []js.Value) (interface{}, error) {
 	person["child"] = child
 
 	return person, nil
-}
-
-////// git-bug
-
-func testGitBug(this js.Value, args []js.Value) (interface{}, error) {
-	cache := cache.NewMultiRepoCache()
-	if cache == nil {
-		println("testGitBug() FAILED to create cache")
-	} else {
-		println("testGitBug() created multi-repo cache!", cache)
-	}
-	return nil, nil
 }
 
 ////// Go/wasm initialisation
@@ -434,7 +443,8 @@ func main() {
 	gobridge.RegisterCallback("getRepositoryList", getRepositoryList)
 	gobridge.RegisterCallback("getHeadCommitsRange", getHeadCommitsRange)
 
-	gobridge.RegisterCallback("testGitBug", testGitBug)
+	// gobridge.RegisterCallback("testGitBug", testGitBug)
+	gobridge.RegisterCallback("testGitBug", testRepoInit)
 	ready = true
 	println("Web Assembly is ready")
 	<-c // Makes the Go process wait until we want it to end
