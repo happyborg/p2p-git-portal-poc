@@ -6,7 +6,11 @@ Using `git-bug` as a library will add support for issues (and later pull request
 
 Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there's a lot of interest in a github alternative which is truly p2p, along with decentralisation and open source, which is very encouraging.
 
-**Hashtag [#gitportal](https://mastodon.technology/web/timelines/tag/gitportal)**
+**Hashtag #gitportal:** [Mastodon](https://mastodon.technology/web/timelines/tag/gitportal) | [Twitter](https://twitter.com/hashtag/gitportal)
+
+**Chat (matrix/element):** [#gitportal](https://riot.im/app/#/room/#gitportal:matrix.org)
+
+**Forum (discourse):** [Git Portal Discussion](https://safenetforum.org/t/safenetwork-git-portal-discussion/32793?u=happybeing)
 
 ## Proof of Concept Summary
 ### Architecture
