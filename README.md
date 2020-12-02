@@ -6,7 +6,11 @@ Using `git-bug` as a library will add support for issues (and later pull request
 
 Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there's a lot of interest in a github alternative which is truly p2p, along with decentralisation and open source, which is very encouraging.
 
-**Hashtag [#gitportal](https://mastodon.technology/web/timelines/tag/gitportal)**
+**Hashtag #gitportal:** [Mastodon](https://mastodon.technology/web/timelines/tag/gitportal) | [Twitter](https://twitter.com/hashtag/gitportal)
+
+**Chat (matrix/element):** [#gitportal](https://riot.im/app/#/room/#gitportal:matrix.org)
+
+**Forum (discourse):** [Git Portal Discussion](https://safenetforum.org/t/safenetwork-git-portal-discussion/32793?u=happybeing)
 
 ## Proof of Concept Summary
 ### Architecture
@@ -27,15 +31,15 @@ Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there'
 
 Remaining activity for the proof-of-concept:
 
-TODO:
+### Activity
 
-[ ] modify HTML/CSS styling. see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1).
+- modify HTML/CSS styling. see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1).
 
-[ ] fork [happybeing/git-bug](https://github.com/happybeing/git-bug) to make a library version (see git-bug: [issue](https://github.com/happybeing/git-bug/issues/1) and [issue](https://github.com/happybeing/git-bug/issues/2))
+- modify git-bug to work with a billy.Filesystem and compile to web assembly (draft PR: [MichaelMure/git-bug #506](https://github.com/MichaelMure/git-bug/pull/506), fork: [happybeing/git-bug](https://github.com/happybeing/git-bug), issues [#1](https://github.com/happybeing/git-bug/issues/1) and [#2](https://github.com/happybeing/git-bug/issues/2))
 
-[ ] add happybeing/git-bug to the poc compilation (as with happybeing/go-git) (see [issue #2](https://github.com/happybeing/p2p-git-portal-poc/issues/2))
+- add happybeing/git-bug to the poc compilation (as with happybeing/go-git) (issue [#2](https://github.com/happybeing/p2p-git-portal-poc/issues/2))
 
-[ ] add instructions for setting up local forks of go-git, go-billy and git-bug
+- add instructions for setting up local forks of go-git, go-billy and git-bug
 
 #### HTML / CSS Work
 The app in branch `main` runs and uses default Svelte HTML/CSS styling.
