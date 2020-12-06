@@ -33,13 +33,11 @@ Remaining activity for the proof-of-concept:
 
 ### Activity
 
-- modify HTML/CSS styling. see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1).
+- **Modify Styling** of HTML/CSS. see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1). Status: being worked on by [@tylerchilds](https://github.com/tylerchilds)
 
-- modify git-bug to work with a billy.Filesystem and compile to web assembly (draft PR: [MichaelMure/git-bug #506](https://github.com/MichaelMure/git-bug/pull/506), fork: [happybeing/git-bug](https://github.com/happybeing/git-bug), issues [#1](https://github.com/happybeing/git-bug/issues/1) and [#2](https://github.com/happybeing/git-bug/issues/2))
+- **Modify git-bug** to work with a billy.Filesystem and compile to web assembly (draft PR: [MichaelMure/git-bug #506](https://github.com/MichaelMure/git-bug/pull/506), fork: [happybeing/git-bug](https://github.com/happybeing/git-bug), issues [#1](https://github.com/happybeing/git-bug/issues/1) and [#2](https://github.com/happybeing/git-bug/issues/2)). **Status:** This is working well enough to test out the next item, but will need to be finalised later (i.e. an agreed way to provide this as an external API to git-bug).
 
-- add happybeing/git-bug to the poc compilation (as with happybeing/go-git) (issue [#2](https://github.com/happybeing/p2p-git-portal-poc/issues/2))
-
-- add instructions for setting up local forks of go-git, go-billy and git-bug
+- **Add git-bug** funcitonality to this poc (as with happybeing/go-git) (issue [#2](https://github.com/happybeing/p2p-git-portal-poc/issues/2)). **Status:** active but not yet functional.
 
 #### HTML / CSS Work
 The app in branch `main` runs and uses default Svelte HTML/CSS styling.
@@ -108,7 +106,12 @@ Note: drag and drop of files is not properly supported yet.
 ### Development
 Hot reloading generally works well, but if you have problems getting rid of a compilation error after you think you've fixed it, restart the `yarn dev` command.
 
-If you want to make changes to the go-git/go-billy, git-bug or the Go/wasm plugin, you need to be set up with local versions as described next, but you should not need to do this.
+If you want to make changes to the Go/wasm plugin or to any go packages used by this project, you must set up local versions under your `go/src` directory and modify your `./go.mod` to use these rather than download them. For example, my `./go.mod` includes 'replace' statements for each package I'm working on locally:
+
+```golang
+replace github.com/MichaelMure/git-bug => /home/mrh/src/go/src/github.com/happybeing/git-bug
+
+```
 
 ### Code Documentation
 You can view **developer documentation** for local code and package dependencies in a web browser, showing functions, types etc. for each package.
