@@ -108,6 +108,13 @@ async function testReturnTypes() {
 
 <main>
 <h1>p2p Git Portal (POC)</h1>
+
+<p> This is an experimental git portal (like github) that will run entirely in
+the browser from static storage, so no server-side code and no third parties involved. Built
+using Svelte and Golang/Web Assembly to run on peer-to-peer networks such as <a
+href='https://safenetwork.tech'>Safe Network</a>. Read more on github at <a
+href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></p>.
+
 <div class='top-grid'>
 	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
 	<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
