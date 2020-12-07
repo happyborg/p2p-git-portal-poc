@@ -114,7 +114,7 @@ func main() {
 	gobridge.RegisterCallback("getHeadCommitsRange", repo.GetHeadCommitsRange)
 
 	// gobridge.RegisterCallback("testGitBug", testGitBug)
-	gobridge.RegisterCallback("testGitBug", testRepoInit)
+	gobridge.RegisterCallback("testGitBug", repo.SetupGitbugCache)
 	ready = true
 	println("Web Assembly is ready")
 	<-c // Makes the Go process wait until we want it to end

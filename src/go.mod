@@ -3,7 +3,7 @@ module github.com/happybeing/p2p-git-portal-poc
 go 1.13
 
 require (
-	github.com/MichaelMure/git-bug v0.0.0-20201123161810-b9961535505b
+	github.com/MichaelMure/git-bug v0.0.0-20201205005248-54d123c6753d
 	github.com/go-git/go-billy/v5 v5.0.0
 	github.com/go-git/go-git/v5 v5.2.0
 	github.com/happybeing/p2p-git-portal-poc/src/repo v0.0.0

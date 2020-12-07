@@ -1,7 +1,7 @@
 //+ build js,wasm
 
 // Package repo manages a set of git-bug gogit.Repository each with go-billy fs
-package repo
+package repo // TODO maybe rename to 'api' or something not 'repo'
 
 import (
 	"errors"
