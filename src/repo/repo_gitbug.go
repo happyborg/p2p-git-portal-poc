@@ -47,8 +47,10 @@ func SetupGitbugCache(this js.Value, args []js.Value) (interface{}, error) {
 		return nil, err
 	}
 
-	// TODO add code to create commits
-	println("all ok so far!")
+	// TODO add code to create test commits (probably as a separate function)
+
+	// Test list bugs from cache
+	listBugsForRepo("primary-repo")
 	return nil, nil
 }
 
@@ -75,4 +77,65 @@ func createTestGitbugIdentity(rc *cache.RepoCache, name string, email string) (*
 
 	GitbugIds[name] = newId
 	return newId, nil
+}
+
+func openRepo(path string) (*cache.RepoCache, error) {
+	println("openRepo():", path)
+	rc, _ := GitbugCache.ResolveRepo(path)
+	if rc != nil {
+		return rc, nil
+	}
+
+	repo, err := repository.OpenFsGoGitRepo(path, nil, Filesystem)
+	println("opened")
+	if err != nil {
+		return nil, err
+	}
+
+	rc, err = GitbugCache.RegisterRepository(path, repo)
+	println("registered")
+	if err != nil {
+		return nil, err
+	}
+
+	return rc, nil
+}
+
+func listBugsForRepo(path string) (map[string]interface{}, error) {
+	return listBugsForRepoCache(openRepo(path))
+}
+
+func listBugsForRepoCache(repoCache *cache.RepoCache, err error) (map[string]interface{}, error) {
+	println("listBugsForRepoCache()...")
+	if err != nil || repoCache == nil {
+		return nil, err
+	}
+
+	bugs := make(map[string]interface{}, 0)
+	for _, id := range repoCache.AllBugsIds() {
+		println("bugId:", (string)(id))
+		bugCache, err := repoCache.ResolveBug(id)
+		if err != nil {
+			println("err:", err.Error())
+		} else {
+			bug := make(map[string]interface{}, 0)
+			snap := bugCache.Snapshot()
+			println("title: ", snap.Title)
+			if snap == nil {
+				println("bad snap")
+				continue
+			}
+
+			bug["title"] = snap.Title
+			bug["id"] = snap.Id().Human()
+			bug["author-name"] = snap.Author.DisplayName()
+			bug["created"] = snap.CreateTime.String()
+			labels := make([]string, len(snap.Labels))
+			for i, l := range snap.Labels {
+				labels[i] = l.String()
+			}
+		}
+	}
+
+	return bugs, nil
 }
