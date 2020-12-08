@@ -51,7 +51,12 @@ func SetupGitbugCache(this js.Value, args []js.Value) (interface{}, error) {
 
 	// Test list bugs from cache
 	listBugsForRepo("primary-repo")
-	return nil, nil
+
+	// Test open repo from filesystem and list bugs
+	GitbugCache.Close()
+	GitbugCache = cache.NewMultiRepoCache()
+
+	return listBugsForRepo("primary-repo")
 }
 
 func createTestGitbugRepoCache(path string) (*cache.RepoCache, error) {
@@ -80,20 +85,17 @@ func createTestGitbugIdentity(rc *cache.RepoCache, name string, email string) (*
 }
 
 func openRepo(path string) (*cache.RepoCache, error) {
-	println("openRepo():", path)
 	rc, _ := GitbugCache.ResolveRepo(path)
 	if rc != nil {
 		return rc, nil
 	}
 
 	repo, err := repository.OpenFsGoGitRepo(path, nil, Filesystem)
-	println("opened")
 	if err != nil {
 		return nil, err
 	}
 
 	rc, err = GitbugCache.RegisterRepository(path, repo)
-	println("registered")
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +115,7 @@ func listBugsForRepoCache(repoCache *cache.RepoCache, err error) (map[string]int
 
 	bugs := make(map[string]interface{}, 0)
 	for _, id := range repoCache.AllBugsIds() {
-		println("bugId:", (string)(id))
+		// println("bugId:", (string)(id))
 		bugCache, err := repoCache.ResolveBug(id)
 		if err != nil {
 			println("err:", err.Error())
@@ -121,11 +123,6 @@ func listBugsForRepoCache(repoCache *cache.RepoCache, err error) (map[string]int
 			bug := make(map[string]interface{}, 0)
 			snap := bugCache.Snapshot()
 			println("title: ", snap.Title)
-			if snap == nil {
-				println("bad snap")
-				continue
-			}
-
 			bug["title"] = snap.Title
 			bug["id"] = snap.Id().Human()
 			bug["author-name"] = snap.Author.DisplayName()
