@@ -1,9 +1,10 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { uploadFile, getRepositoryList, listHeadCommits, getHeadCommitsRange, testGitBug } = wasm;
+const { uploadFile, getRepositoryList, getHeadCommitsRange, newRepository} = wasm;
 
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
+import IssuesListingPanel from './IssuesListingPanel.svelte'
 import CommitsListingPanel from './CommitsListingPanel.svelte'
 
 import FileUploadPanel from './test/FileUploadPanel.svelte'
@@ -16,6 +17,24 @@ let errorMessage;
 $: manageUploads(droppedFiles)
 
 let activeRepository = 0;
+
+let newRepoName =''
+
+async function makeNewRepo() {
+	newRepoName.trim()
+	if (newRepoName.length === 0) {
+		errorMessage = "Please enter a name for the new repository"
+		return
+	}
+	else if (allRepositories[newRepoName] !== undefined) {
+		errorMessage = "Repository already exists at: " + newRepoName
+		return
+	}
+
+	await newRepository(newRepoName)
+	await updateRepositoryUI()
+	setActiveRepository(newRepoName)
+}
 
 // Development:
 let allRepositories = [];
@@ -56,6 +75,16 @@ async function manageUploads(droppedFiles) {
 
 async function updateRepositoryUI() {
 	allRepositories = await getRepositoryList();
+}
+
+function setActiveRepository(repoDirectory) {
+	for (let index = 0; index < allRepositories.length; index++) {
+		let repo = allRepositories[index]
+		if (repo.path === repoDirectory) {
+			activeRepository = index
+			return
+		}
+	}
 }
 
 async function testRangeCommits() {
@@ -117,15 +146,15 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></
 
 <div class='top-grid'>
 	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
-	<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
+	<IssuesListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></IssuesListingPanel>
 </div>
 
-<div>
+<div class='top-grid'>
 	<p>
-		<button type="button" on:click={() => { testGitBug(); }}>Test git-bug</button><br/>
-		<button type="button" on:click={() => { listHeadCommits("http://localhost:8010/proxy/happybeing/p2p-git-portal-poc.git"); }}>Test list HEAD commits</button><br/>
-		<button type="button" on:click={() => { testRangeCommits() }}>Test get range HEAD commits</button><br/>
+		<button type="button" on:click={() => { makeNewRepo(newRepoName); }}>New Repository:</button>
+        <input bind:value={newRepoName} placeholder="directory name"><br/>		
 	</p>
+	<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
 </div>
 
 {#if errorMessage}

@@ -9,20 +9,15 @@ export let allRepositories;
 
 let repositoryPath = '';
 $: repositoryPath = allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
-    allRepositories[activeRepository].path : 'no repository selected'; 
+    allRepositories[activeRepository].path : ''; 
 
 $: updateCommitsListing(repositoryPath);
 
-// Development:
 let commits = [];
-// commits = [
-//     {hash: "d1f23d5e", message: "Initial commit"},
-//     {hash: "1eb2b4a6", message: "Add some stuff"},
-//     {hash: "e12c325f", message: "Add lots more stuff"},
-// ];
 
 async function updateCommitsListing(repoPath) {
     console.log("updateCommitsListing() repoPath: ", repoPath);
+    commits = [];
     let result = [];
     if (repoPath) {
         let commitsRange = await getHeadCommitsRange(repoPath, 0, 10);
@@ -49,7 +44,7 @@ async function updateCommitsListing(repoPath) {
 </style>
 <div>
     <ul>
-        <h2>Commit History for: {repositoryPath}</h2>
+        <h2>Commit History</h2>
         {#if commits && commits.length > 0}
             {#each commits as commit, index}
                 {#if commit}

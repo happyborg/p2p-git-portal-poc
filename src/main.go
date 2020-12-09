@@ -9,8 +9,6 @@ import (
 
 	"github.com/happybeing/p2p-git-portal-poc/src/repo"
 	"github.com/happybeing/webpack-golang-wasm-async-loader/gobridge"
-
-	"github.com/MichaelMure/git-bug/cache"
 )
 
 var global = js.Global()
@@ -64,21 +62,6 @@ func listFiles(this js.Value, args []js.Value) (interface{}, error) {
 
 //// git-bug gogit.Repository tests
 
-func testGitBug(this js.Value, args []js.Value) (interface{}, error) {
-	cache := cache.NewMultiRepoCache()
-	if cache == nil {
-		println("testGitBug() FAILED to create cache")
-	} else {
-		println("testGitBug() created multi-repo cache!", cache)
-	}
-	return nil, nil
-}
-
-func testRepoInit(this js.Value, args []js.Value) (interface{}, error) {
-	println("testRepoInit()...")
-	return nil, repo.PocRepoInitialise()
-}
-
 //// Test syscall/js Go/Wasm types
 
 func testTypes(this js.Value, args []js.Value) (interface{}, error) {
@@ -112,9 +95,9 @@ func main() {
 	gobridge.RegisterCallback("cloneRepository", repo.CloneRepository)
 	gobridge.RegisterCallback("getRepositoryList", repo.GetRepositoryList)
 	gobridge.RegisterCallback("getHeadCommitsRange", repo.GetHeadCommitsRange)
+	gobridge.RegisterCallback("getIssuesForRepo", repo.GetIssuesForRepo)
 
-	// gobridge.RegisterCallback("testGitBug", testGitBug)
-	gobridge.RegisterCallback("testGitBug", repo.SetupGitbugCache)
+	gobridge.RegisterCallback("newRepository", repo.NewRepository)
 	ready = true
 	println("Web Assembly is ready")
 	<-c // Makes the Go process wait until we want it to end

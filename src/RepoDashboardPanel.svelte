@@ -20,6 +20,7 @@ export let allRepositories;
                 <a href= '#none' on:click={() => activeRepository = index}>{repo.path}</a></span><br/>
         {/each}
     {:else}
-        No repositories found. Add repositories using Upload or Clone Repository.
+        No repositories found.<br/>
+        Add repositories using New, Clone or Upload.
     {/if}
 </div>
