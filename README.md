@@ -31,13 +31,17 @@ Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there'
 
 Remaining activity for the proof-of-concept:
 
-### Activity
+### Activity & Opportunities to Help
 
-- **Modify Styling** of HTML/CSS. see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1). **Status:** looking for help. Alert for FOSS folks with anything from basic CSS skills and a desire to learn some Svelte (with my help) to people who want to design APIs and a build a professional Svelte front-end on top of them.
+- **Modify Styling** of HTML/CSS. **Status:** plenty to do!
 
-- **Modify git-bug** to work with a billy.Filesystem and compile to web assembly. **Status:** the fork [happybeing/git-bug](https://github.com/happybeing/git-bug) is sufficient for remaining work to complete this proof-of-concept. [@happybeing](https://github.com/happybeing) will bring it up to date with the latest git-bug and work with git-bug author [@MichaelMure](https://github.com/MichaelMure) to provide a proper API for use by apps, as summarised in this [issue comment](https://github.com/happybeing/git-bug/issues/2#issuecomment-742494498).
+	**Help Wanted** with tasks suitable for FOSS folks with anything from basic CSS skills and a desire to learn some Svelte (with my help) to folks who want to create the vision for a future git portal UX (user experience). Some notes are included below and there's a discussion on [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1).
 
-- **Improve Features and UI** to create a more realistic demonstration and formulate a suitable feature set for the API to support the app. **Status:** several small tasks are available in Svelte front-end and Golang no-server back-end, but are not written down. So ask if you may be able to help and I will begin to turn my thoughts into tasks with your prompting.
+- **Improve Features and UI** to create a more realistic demonstration and formulate a suitable feature set for the API to support the app. 
+
+	**Help Wanted** with several small tasks in Svelte front-end and Golang no-server back-end, but these are not yet written down. So ask if you may be able to help and I will begin to turn my thoughts into tasks with your prompting. Bigger tasks will flow from this if you want to help design or implement the features and API providing these to the front-end.
+
+- **Modify git-bug** to work with a billy.Filesystem and compile to web assembly. **Status:** I got this! The fork [happybeing/git-bug](https://github.com/happybeing/git-bug) is sufficient for remaining work to complete this proof-of-concept. [@happybeing](https://github.com/happybeing) will bring it up to date with the latest git-bug and work with git-bug author [@MichaelMure](https://github.com/MichaelMure) to provide a proper API for use by apps, as summarised in this [issue comment](https://github.com/happybeing/git-bug/issues/2#issuecomment-742494498).
 
 #### HTML / CSS Work
 The app in branch `main` runs and uses default Svelte HTML/CSS styling.
