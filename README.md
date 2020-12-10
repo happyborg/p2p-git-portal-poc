@@ -27,17 +27,17 @@ Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there'
 
 ## Current Status
 
-**WORK IN PROGRESS** - everything in the above list is working apart for the last item: use git-bug to display and edit issues/comments.
+**WORK IN PROGRESS** - everything above is working at least "under the hood". The UI is still more of a test harness, but if you open the browser console you get evidence of what is working.
 
 Remaining activity for the proof-of-concept:
 
 ### Activity
 
-- **Modify Styling** of HTML/CSS. see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1). Status: being worked on by [@tylerchilds](https://github.com/tylerchilds)
+- **Modify Styling** of HTML/CSS. see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1). **Status:** looking for help. Alert for FOSS folks with anything from basic CSS skills and a desire to learn some Svelte (with my help) to people who want to design APIs and a build a professional Svelte front-end on top of them.
 
-- **Modify git-bug** to work with a billy.Filesystem and compile to web assembly (draft PR: [MichaelMure/git-bug #506](https://github.com/MichaelMure/git-bug/pull/506), fork: [happybeing/git-bug](https://github.com/happybeing/git-bug), issues [#1](https://github.com/happybeing/git-bug/issues/1) and [#2](https://github.com/happybeing/git-bug/issues/2)). **Status:** This is working well enough to test out the next item, but will need to be finalised later (i.e. an agreed way to provide this as an external API to git-bug).
+- **Modify git-bug** to work with a billy.Filesystem and compile to web assembly. **Status:** the fork [happybeing/git-bug](https://github.com/happybeing/git-bug) is sufficient for remaining work to complete this proof-of-concept. [@happybeing](https://github.com/happybeing) will bring it up to date with the latest git-bug and work with git-bug author [@MichaelMure](https://github.com/MichaelMure) to provide a proper API for use by apps, as summarised in this [issue comment](https://github.com/happybeing/git-bug/issues/2#issuecomment-742494498).
 
-- **Add git-bug** funcitonality to this poc (as with happybeing/go-git) (issue [#2](https://github.com/happybeing/p2p-git-portal-poc/issues/2)). **Status:** active but not yet functional.
+- **Improve Features and UI** to create a more realistic demonstration and formulate a suitable feature set for the API to support the app. **Status:** several small tasks are available in Svelte front-end and Golang no-server back-end, but are not written down. So ask if you may be able to help and I will begin to turn my thoughts into tasks with your prompting.
 
 #### HTML / CSS Work
 The app in branch `main` runs and uses default Svelte HTML/CSS styling.
@@ -101,7 +101,7 @@ If you have problems, open the web browser console to look for any error message
 Note: drag and drop of files is not properly supported yet.
 
 ### Screenshot
-<img src="./gitportal-poc-stage1.png"/>
+<img src="./gitportal-poc-screenshot.png"/>
 
 ### Development
 Hot reloading generally works well, but if you have problems getting rid of a compilation error after you think you've fixed it, restart the `yarn dev` command.
