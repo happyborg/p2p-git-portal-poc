@@ -17,10 +17,11 @@ replace github.com/go-git/go-git/v5 => github.com/happybeing/go-git/v5 v5.2.1
 replace github.com/go-git/go-billy/v5 => github.com/happybeing/go-billy/v5 v5.0.1
 
 // For development with local go-git/go-billy and wasm plugin:
-replace github.com/MichaelMure/git-bug => /home/mrh/src/go/src/github.com/happybeing/git-bug
+replace github.com/MichaelMure/git-bug => github.com/happybeing/git-bug master
 
-replace github.com/99designs/keyring => /home/mrh/src/go/src/github.com/happybeing/keyring
+replace github.com/99designs/keyring => github.com/happybeing/keyring master
 
+// You need to point this to your local directory where you cloned the project
 replace github.com/happybeing/p2p-git-portal-poc/src/repo => /home/mrh/src/wasm/p2p-git-portal-poc/src/repo
 
 // Dependencies of git-bug which require tweaks for wasm
