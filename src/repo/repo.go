@@ -314,7 +314,7 @@ func GetHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 
 	// Latest commit on current branch
 	ref, err := r.Head()
-	if err != nil {
+	if ref == nil || err != nil {
 		return nil, err
 	}
 

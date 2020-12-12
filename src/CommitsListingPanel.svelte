@@ -19,13 +19,18 @@ async function updateCommitsListing(repoPath) {
     console.log("updateCommitsListing() repoPath: ", repoPath);
     commits = [];
     let result = [];
+    let commitsRange;
     if (repoPath) {
-        let commitsRange = await getHeadCommitsRange(repoPath, 0, 10);
-        console.dir(commitsRange);
-        if (commitsRange) {
-            result = commitsRange.commits;
-            console.log("result now: ");
-            console.dir(result);
+        try {
+            commitsRange = await getHeadCommitsRange(repoPath, 0, 10);
+            console.dir(commitsRange);
+            if (commitsRange !== undefined && commitsRange && commitsRange.commits !== undefined) {
+                result = commitsRange.commits;
+                console.log("result now: ");
+                console.dir(result);
+            }
+        } catch(e) {
+            return;
         }
     }
 
