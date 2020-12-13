@@ -58,7 +58,7 @@ async function doGitClone() {
 				console.log(message);
 			} else {
 				console.log("clone complete");
-				updateRepositoryUI();
+				updateRepositoryUI(path);
 			}
 		});
 	} catch (e) {

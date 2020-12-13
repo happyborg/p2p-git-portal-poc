@@ -118,6 +118,11 @@ func CloneRepository(this js.Value, args []js.Value) (interface{}, error) {
 	// println("host:", host)
 	// println("path:", path)
 	// println("proxiedURI:", proxiedURI)
+	worktreeFs, err := Filesystem.Chroot(path)
+	if err != nil {
+		return nil, err
+	}
+
 	dotGitFs, err := Filesystem.Chroot(filepath.Join(path, ".git"))
 	if err != nil {
 		return nil, err
@@ -125,7 +130,7 @@ func CloneRepository(this js.Value, args []js.Value) (interface{}, error) {
 
 	storage := storagefs.NewStorage(dotGitFs, cache.NewObjectLRUDefault())
 	go func() {
-		gogitRepo, err := gogit.Clone(storage, Filesystem, &gogit.CloneOptions{URL: url})
+		gogitRepo, err := gogit.Clone(storage, worktreeFs, &gogit.CloneOptions{URL: url})
 		if err != nil {
 			// if true {
 			println("gogit.Clone() failed: ", err.Error())
@@ -314,7 +319,7 @@ func GetHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 
 	// Latest commit on current branch
 	ref, err := r.Head()
-	if err != nil {
+	if ref == nil || err != nil {
 		return nil, err
 	}
 
