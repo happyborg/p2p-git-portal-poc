@@ -108,7 +108,7 @@ function setActiveRepository(repoDirectory) {
 
 function getRepositoryForDirectory(directoryName) {
 	for (let index = 0; index < allRepositories.length; index++) {
-		if (allRepositories[index].path === directoryName) return repo
+		if (allRepositories[index].path === directoryName) return allRepositories[index].repo
 	}
 	return undefined
 }
