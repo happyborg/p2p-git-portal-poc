@@ -6,19 +6,38 @@ const { uploadFile, getRepositoryList, getHeadCommitsRange, newRepository} = was
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
 import IssuesListingPanel from './IssuesListingPanel.svelte'
 import CommitsListingPanel from './CommitsListingPanel.svelte'
+import DirectoryListingPanel from './DirectoryListingPanel.svelte'
 
 import FileUploadPanel from './test/FileUploadPanel.svelte'
 import GoGitClonePanel from './test/GoGitClonePanel.svelte'
 
-let droppedFiles = [];
-let uploadingFile;
-let errorMessage;
+let droppedFiles = []
+let uploadingFile
+let errorMessage
 
 $: manageUploads(droppedFiles)
 
-let activeRepository = 0;
-
 let newRepoName =''
+let activeRepository
+let directoryPath = ''
+
+let repositoryPath = ''
+$: repositoryPath = (allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
+    allRepositories[activeRepository].path : '')
+
+$: updateDirectoryPath(activeRepository)
+$: console.log("directoryPath:", directoryPath)	// Debug
+
+async function updateDirectoryPath(activeRepository) {
+	console.log("updateDirectoryPath()", activeRepository)
+	let repo = allRepositories[activeRepository]
+	if (repo === undefined) {
+		directoryPath = ''
+		return
+	}
+
+	directoryPath = repo.path
+}
 
 async function makeNewRepo() {
 	newRepoName.trim()
@@ -26,14 +45,13 @@ async function makeNewRepo() {
 		errorMessage = "Please enter a name for the new repository"
 		return
 	}
-	else if (allRepositories[newRepoName] !== undefined) {
+	else if (getRepositoryForDirectory(newRepoName) !== undefined) {
 		errorMessage = "Repository already exists at: " + newRepoName
 		return
 	}
 
 	await newRepository(newRepoName)
-	await updateRepositoryUI()
-	setActiveRepository(newRepoName)
+	await updateRepositoryUI(newRepoName)
 }
 
 // Development:
@@ -73,8 +91,9 @@ async function manageUploads(droppedFiles) {
 	}
 }
 
-async function updateRepositoryUI() {
+async function updateRepositoryUI(newRepoPath) {
 	allRepositories = await getRepositoryList();
+	setActiveRepository(newRepoPath)
 }
 
 function setActiveRepository(repoDirectory) {
@@ -85,6 +104,13 @@ function setActiveRepository(repoDirectory) {
 			return
 		}
 	}
+}
+
+function getRepositoryForDirectory(directoryName) {
+	for (let index = 0; index < allRepositories.length; index++) {
+		if (allRepositories[index].path === directoryName) return repo
+	}
+	return undefined
 }
 
 async function testRangeCommits() {
@@ -146,7 +172,7 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></
 
 <div class='top-grid'>
 	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
-	<IssuesListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></IssuesListingPanel>
+	<IssuesListingPanel bind:repositoryPath={repositoryPath}></IssuesListingPanel>
 </div>
 
 <div class='top-grid'>
@@ -164,17 +190,17 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></
 </div>
 {/if}
 <div class='top-grid'>
-	<FileUploadPanel bind:droppedFiles={droppedFiles} bind:errorMessage={errorMessage} >
+	<!-- <FileUploadPanel bind:droppedFiles={droppedFiles} bind:errorMessage={errorMessage} >
 		<p>Files to upload: {droppedFiles.length}<br/>
 			{#if uploadingFile}
 				Uploading: {uploadingFile}
 			{/if}
 			<br/>
 		</p>		
-	</FileUploadPanel>
+	</FileUploadPanel> -->
 	<GoGitClonePanel updateRepositoryUI={updateRepositoryUI} bind:errorMessage={errorMessage} ></GoGitClonePanel>
-</div>
-
+		<DirectoryListingPanel storeName="Storage" bind:directoryPath={directoryPath}></DirectoryListingPanel>
+	</div>
 <!-- <GoWasmExample bind:errorMessage={errorMessage} ></GoWasmExample> -->
 </main>
 

@@ -4,35 +4,22 @@
 import wasm from './main.go';
 const { getIssuesForRepo } = wasm;
 
-export let activeRepository;
-export let allRepositories;
-
-let repositoryPath = '';
-$: repositoryPath = allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
-    allRepositories[activeRepository].path : ''; 
+export let repositoryPath;
 
 $: updateIssuesListing(repositoryPath);
 
-// Development:
 let issues = [];
-// issues = [
-//     {id: "d1f23d5e", title: "Initial commit"},
-//     {id: "1eb2b4a6", title: "Add some stuff"},
-//     {id: "e12c325f", titletitle: "Add lots more stuff"},
-// ];
 
 async function updateIssuesListing(repoPath) {
     console.log("updateIssuesListing() repoPath: ", repoPath);
     let result = [];
     if (repoPath) {
         result = await getIssuesForRepo(repoPath);
-        console.log("result now: ");
-        console.dir(result);
     }
 
     issues = [...result];
-    console.log("issues now: ");
-    console.dir(issues);
+    // console.log("issues now: ");
+    // console.dir(issues);
 }
 
 </script>

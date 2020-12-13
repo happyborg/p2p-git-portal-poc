@@ -4,12 +4,7 @@
 import wasm from './main.go';
 const { getHeadCommitsRange } = wasm;
 
-export let activeRepository;
-export let allRepositories;
-
-let repositoryPath = '';
-$: repositoryPath = allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
-    allRepositories[activeRepository].path : ''; 
+export let repositoryPath;
 
 $: updateCommitsListing(repositoryPath);
 
@@ -26,8 +21,6 @@ async function updateCommitsListing(repoPath) {
             console.dir(commitsRange);
             if (commitsRange !== undefined && commitsRange && commitsRange.commits !== undefined) {
                 result = commitsRange.commits;
-                console.log("result now: ");
-                console.dir(result);
             }
         } catch(e) {
             return;
@@ -35,8 +28,8 @@ async function updateCommitsListing(repoPath) {
     }
 
     commits = [...result];
-    console.log("commits now: ");
-    console.dir(commits);
+    // console.log("commits now: ");
+    // console.dir(commits);
 }
 
 </script>

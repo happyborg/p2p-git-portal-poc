@@ -45,19 +45,37 @@ func uploadFile(this js.Value, args []js.Value) (interface{}, error) {
 	return ret, nil
 }
 
-func listFiles(this js.Value, args []js.Value) (interface{}, error) {
-	listing, err := repo.Filesystem.ReadDir("testrepo")
-	// listing, err := repo.Filesystem.ReadDir(args[0].String())
+// args[]:
+//	[0] path - local repo path to files in a repository
+func getDirectoryEntries(this js.Value, args []js.Value) (interface{}, error) {
+	path := args[0].String()
+	return listFiles(path)
+}
+
+func listFiles(path string) ([]interface{}, error) {
+	println("listFiles()")
+	listing, err := repo.Filesystem.ReadDir(path)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	println("Listing files:")
-	for _, f := range listing {
-		fmt.Println(f.Name())
+	entries := make([]interface{}, len(listing))
+	for index, f := range listing {
+		entry := make(map[string]interface{}, 0)
+		entry["name"] = f.Name()
+		entry["modified"] = f.ModTime().UTC().Unix()
+		entry["mode"] = f.Mode().String() // FileMode e.g. "drwxrwxrwx"
+		entry["size"] = f.Size()          // int64
+		entry["sys"] = f.Sys()            // underlying data source (can return nil)
+		if f.IsDir() {
+			entry["type"] = "directory"
+		} else {
+			entry["type"] = "file"
+		}
+		entries[index] = entry
 	}
 
-	return 0, err
+	return entries, err
 }
 
 //// git-bug gogit.Repository tests
@@ -87,7 +105,6 @@ func main() {
 	c := make(chan struct{}, 0)
 
 	gobridge.RegisterCallback("uploadFile", uploadFile)
-	gobridge.RegisterCallback("listFiles", listFiles)
 	gobridge.RegisterCallback("listHeadCommits", repo.ListHeadCommits)
 	gobridge.RegisterCallback("testTypes", testTypes)
 	gobridge.RegisterCallback("testGitClone", repo.GitCloneTest)
@@ -96,6 +113,7 @@ func main() {
 	gobridge.RegisterCallback("getRepositoryList", repo.GetRepositoryList)
 	gobridge.RegisterCallback("getHeadCommitsRange", repo.GetHeadCommitsRange)
 	gobridge.RegisterCallback("getIssuesForRepo", repo.GetIssuesForRepo)
+	gobridge.RegisterCallback("getDirectory", getDirectoryEntries)
 
 	gobridge.RegisterCallback("newRepository", repo.NewRepository)
 	ready = true
