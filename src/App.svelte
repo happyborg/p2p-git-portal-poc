@@ -8,7 +8,6 @@ import IssuesListingPanel from './IssuesListingPanel.svelte'
 import CommitsListingPanel from './CommitsListingPanel.svelte'
 import DirectoryListingPanel from './DirectoryListingPanel.svelte'
 
-import FileUploadPanel from './test/FileUploadPanel.svelte'
 import GoGitClonePanel from './test/GoGitClonePanel.svelte'
 
 let droppedFiles = []
@@ -162,13 +161,13 @@ async function testReturnTypes() {
 </style>
 
 <main>
-<h1>p2p Git Portal (POC)</h1>
+<h1>Peer-to-Peer Git Portal</h1>
 
 <p> This is an experimental git portal (like github) that will run entirely in
 the browser from static storage, so no server-side code and no third parties involved. Built
 using Svelte and Golang/Web Assembly to run on peer-to-peer networks such as <a
 href='https://safenetwork.tech'>Safe Network</a>. Read more on github at <a
-href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></p>.
+href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a>.</p>
 
 <div class='top-grid'>
 	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
@@ -177,7 +176,7 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></
 
 <div class='top-grid'>
 	<div>
-		<h2>New Repository</h2>
+		<h3>New</h3>
 		<p>
 			<input bind:value={newRepoName} placeholder="directory name">
 			<button type="button" on:click={() => { makeNewRepo(newRepoName); }}>New</button>

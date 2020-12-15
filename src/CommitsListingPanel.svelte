@@ -41,7 +41,7 @@ async function updateCommitsListing(repoPath) {
 
 </style>
 <div>
-    <h2>Commit History</h2>
+    <h3>Commit History</h3>
     {#if commits && commits.length > 0}
         {#each commits as commit, index}
             {#if commit}

@@ -31,7 +31,7 @@ async function updateIssuesListing(repoPath) {
 
 </style>
 <div>
-    <h2>Issues</h2>
+    <h3>Issues</h3>
     {#if issues && issues.length > 0}
         {#each issues as issue, index}
             {#if issue}

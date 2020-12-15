@@ -13,7 +13,7 @@ export let allRepositories;
 
 </style>
 <div>
-    <h2>Active Repository</h2>
+    <h2>Repositories</h2>
     {#if allRepositories !== undefined && allRepositories.length > 0}
         {#each allRepositories as repo, index}
             <span class={index == activeRepository ? 'highlight' : ''}>
@@ -21,6 +21,6 @@ export let allRepositories;
         {/each}
     {:else}
         No repositories found.<br/>
-        Add repositories using New, Clone or Upload.
+        Add repositories using New, Upload or Clone.
     {/if}
 </div>

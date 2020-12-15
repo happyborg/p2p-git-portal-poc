@@ -84,7 +84,7 @@ async function appendToPath(itemName) {
 
 </style>
 <div>
-    <h2>{storeName}</h2>
+    <h3>{storeName}</h3>
     <h2>
         <!-- <a href="#/" on:click={() => newPath("")}>{storeName}</a> -->
         {#if repositoryRoot.length > 0}
