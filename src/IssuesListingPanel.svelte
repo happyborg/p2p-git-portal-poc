@@ -31,16 +31,14 @@ async function updateIssuesListing(repoPath) {
 
 </style>
 <div>
-    <ul>
-        <h2>Issues</h2>
-        {#if issues && issues.length > 0}
-            {#each issues as issue, index}
-                {#if issue}
-                    <span>#{issue.id.substr(0,7)} {issue.title}</span><br/>
-                {/if}
-            {/each}
-        {:else}
-            No issues.
-        {/if}
-    </ul>
+    <h2>Issues</h2>
+    {#if issues && issues.length > 0}
+        {#each issues as issue, index}
+            {#if issue}
+                <span>#{issue.id.substr(0,7)} {issue.title}</span><br/>
+            {/if}
+        {/each}
+    {:else}
+        No issues.
+    {/if}
 </div>

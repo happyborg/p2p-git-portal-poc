@@ -41,16 +41,14 @@ async function updateCommitsListing(repoPath) {
 
 </style>
 <div>
-    <ul>
-        <h2>Commit History</h2>
-        {#if commits && commits.length > 0}
-            {#each commits as commit, index}
-                {#if commit}
-                    <span>#{commit.hash.substr(0,7)} {commit.message}</span><br/>
-                {/if}
-            {/each}
-        {:else}
-            No commits.
-        {/if}
-    </ul>
+    <h2>Commit History</h2>
+    {#if commits && commits.length > 0}
+        {#each commits as commit, index}
+            {#if commit}
+                <span>#{commit.hash.substr(0,7)} {commit.message}</span><br/>
+            {/if}
+        {/each}
+    {:else}
+        No commits.
+    {/if}
 </div>

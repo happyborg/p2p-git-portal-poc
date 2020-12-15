@@ -13,7 +13,7 @@ export let allRepositories;
 
 </style>
 <div>
-    <h2>Select a repository:</h2>
+    <h2>Active Repository</h2>
     {#if allRepositories !== undefined && allRepositories.length > 0}
         {#each allRepositories as repo, index}
             <span class={index == activeRepository ? 'highlight' : ''}>

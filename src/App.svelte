@@ -21,9 +21,9 @@ let newRepoName =''
 let activeRepository
 let directoryPath = ''
 
-let repositoryPath = ''
-$: repositoryPath = (allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
-    allRepositories[activeRepository].path : '')
+let repositoryRoot = ''
+$: repositoryRoot = (allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
+    allRepositories[activeRepository].path.trim() : '')
 
 $: updateDirectoryPath(activeRepository)
 $: console.log("directoryPath:", directoryPath)	// Debug
@@ -172,14 +172,17 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></
 
 <div class='top-grid'>
 	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
-	<IssuesListingPanel bind:repositoryPath={repositoryPath}></IssuesListingPanel>
+	<IssuesListingPanel bind:repositoryRoot={repositoryRoot}></IssuesListingPanel>
 </div>
 
 <div class='top-grid'>
-	<p>
-		<button type="button" on:click={() => { makeNewRepo(newRepoName); }}>New Repository:</button>
-        <input bind:value={newRepoName} placeholder="directory name"><br/>		
-	</p>
+	<div>
+		<h2>New Repository</h2>
+		<p>
+			<input bind:value={newRepoName} placeholder="directory name">
+			<button type="button" on:click={() => { makeNewRepo(newRepoName); }}>New</button>
+		</p>
+	</div>
 	<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
 </div>
 
@@ -199,7 +202,7 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></
 		</p>		
 	</FileUploadPanel> -->
 	<GoGitClonePanel updateRepositoryUI={updateRepositoryUI} bind:errorMessage={errorMessage} ></GoGitClonePanel>
-		<DirectoryListingPanel storeName="Storage" bind:directoryPath={directoryPath}></DirectoryListingPanel>
+		<DirectoryListingPanel storeName="Worktree" bind:repositoryRoot={repositoryRoot}></DirectoryListingPanel>
 	</div>
 <!-- <GoWasmExample bind:errorMessage={errorMessage} ></GoWasmExample> -->
 </main>

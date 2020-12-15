@@ -4,17 +4,27 @@
 import wasm from './main.go';
 const {getDirectory} = wasm;
 
-export let storeName = "storage"
-export let directoryPath;
+export let storeName = "Content"
+export let repositoryRoot = ''
 
-let directory = [];
-let crumbs = [];
+let directoryPath = ''
+let directory = []
+let repositoryCrumbs = []
+let crumbs = []
 
+$: updateRepository(repositoryRoot)
 $: updateCrumbs(directoryPath)
 $: updateDirectory(directoryPath)
 
+async function updateRepository(repositoryRoot) {
+    // console.log("updateRepository(): ", repositoryRoot)
+    repositoryCrumbs = repositoryRoot.split('/')
+    console.dir(repositoryCrumbs)
+    directoryPath = repositoryRoot
+}
+
 async function updateDirectory(directoryPath) {
-	// console.log("updateDirectory(): ", directoryPath)
+    // console.log("updateDirectory(): ", directoryPath)    
 	let listing = await getDirectory(directoryPath)
 	directory = [...listing]
 	// console.dir(directory)
@@ -31,10 +41,12 @@ async function updateDirectory(directoryPath) {
 }
 
 async function updateCrumbs(directoryPath) {
-    // console.log("updateCrumbs()", directoryPath)
+    console.log("updateCrumbs()", directoryPath)
     let newCrumbs = [];
     if (directoryPath !== undefined && directoryPath !== "") {
-        newCrumbs = directoryPath.split('/')
+        let crumbPart = directoryPath.substring(repositoryRoot.length)
+        newCrumbs = crumbPart.split('/')
+        if (newCrumbs.length > 0 && newCrumbs[0].length === 0) newCrumbs.shift()
     }
     crumbs = [...newCrumbs]
     // console.log("crumbs:")
@@ -47,7 +59,7 @@ function buildPath(n) {
     // console.log("buildPath()", n)
     // console.log("crumbs:")
     // console.dir(crumbs)
-    let path = crumbs.slice(0, n+1).join('/')
+    let path = [...repositoryCrumbs, ...crumbs.slice(0, n+1)].join('/')
     console.log("buildPath returns: ", path)
     return path
 }
@@ -72,12 +84,14 @@ async function appendToPath(itemName) {
 
 </style>
 <div>
+    <h2>{storeName}</h2>
     <h2>
-        <a href="#/" on:click={() => newPath("")}>{storeName}</a>
-        <b> / </b>
+        <!-- <a href="#/" on:click={() => newPath("")}>{storeName}</a> -->
+        {#if repositoryRoot.length > 0}
+        <a href="#{repositoryRoot}" on:click={() => newPath(repositoryRoot)}>{repositoryRoot}</a>
+        {/if}
         {#each crumbs as crumb, i}
-            <a href="#{crumb}" on:click={() => newPath(buildPath(i))}>{crumb}</a>
-            <b> / </b>
+            &nbsp;/&nbsp;<a href="#{crumb}" on:click={() => newPath(buildPath(i))}>{crumb}</a>
         {/each}
     </h2>
 

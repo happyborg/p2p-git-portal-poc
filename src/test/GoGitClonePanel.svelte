@@ -68,9 +68,9 @@ async function doGitClone() {
 
 </script>
 <div>
-	<hr><h2>Clone Repository</h2>
+	<h2>Clone Repository</h2>
 	<p>
-        Repository: <input bind:value={uri} placeholder="URI"><br/>
+        <input bind:value={uri} placeholder="URI">
 		<button type="button" on:click={() => { doGitClone(); }}>Clone</button>
 	</p>
 	<p>
