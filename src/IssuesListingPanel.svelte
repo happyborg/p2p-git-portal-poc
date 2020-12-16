@@ -4,9 +4,9 @@
 import wasm from './main.go';
 const { getIssuesForRepo } = wasm;
 
-export let repositoryPath;
+export let repositoryRoot;
 
-$: updateIssuesListing(repositoryPath);
+$: updateIssuesListing(repositoryRoot);
 
 let issues = [];
 
