@@ -55,6 +55,56 @@ func SetupGitbugCache(this js.Value, args []js.Value) (interface{}, error) {
 
 // args []js.Value:
 // [0] - path to worktree where repository will be created
+// [1] - optional callback(error) called on completion with a null value on success, or an error message
+func OpenRepository(this js.Value, args []js.Value) (interface{}, error) {
+	println("OpenRepository()...")
+	path := args[0].String()
+
+	var callback js.Value
+	if len(args) > 1 {
+		callback = args[1]
+	}
+
+	// worktreeFs, err := Filesystem.Chroot(path)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// dotGitFs, err := Filesystem.Chroot(filepath.Join(path, ".git"))
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// storage := storagefs.NewStorage(dotGitFs, cache.NewObjectLRUDefault())
+	// gogitRepo, err := gogit.Init(storage, worktreeFs)
+	// if err != nil {
+	// 	println("gogit.Init() failed: ", err.Error())
+	// 	return nil, err
+	// }
+	gogitRepo, repoCache, err := OpenRepo(path)
+	if err != nil {
+		println("OpenRepo() failed: ", err.Error())
+		callback.Invoke(err.Error())
+	} else {
+		entry := Entry{
+			"none",
+			path,
+			"none",
+			gogitRepo,
+			repoCache,
+		}
+
+		// bilbo, _ := NewTestGitbugIdentity(&entry, "Bilbo Baggins", "bilbo@the.vale")
+		// AddSampleBugs(&entry, bilbo)
+		AllRepositories[path] = &entry
+		callback.Invoke(js.Null())
+	}
+
+	return nil, nil
+}
+
+// args []js.Value:
+// [0] - path to worktree where repository will be created
 func NewRepository(this js.Value, args []js.Value) (interface{}, error) {
 	println("NewRepository()...")
 	path := args[0].String()
@@ -75,7 +125,7 @@ func NewRepository(this js.Value, args []js.Value) (interface{}, error) {
 		println("gogit.Init() failed: ", err.Error())
 		return nil, err
 	}
-	repoCache, err := OpenRepo(path)
+	_, repoCache, err := OpenRepo(path)
 	if err != nil {
 		println("OpenRepo() failed: ", err.Error())
 		return nil, err
@@ -146,27 +196,34 @@ func NewTestGitbugIdentity(entry *Entry, name string, email string) (*bugcache.I
 	return newId, nil
 }
 
-func OpenRepo(path string) (*bugcache.RepoCache, error) {
-	rc, _ := GitbugCache.ResolveRepo(path)
-	if rc != nil {
-		return rc, nil
+func OpenRepo(path string) (*gogit.Repository, *bugcache.RepoCache, error) {
+	existingEntry := AllRepositories[path]
+	if existingEntry != nil {
+		return existingEntry.GogitRepo, existingEntry.GitbugRC, nil
 	}
 
+	rc, _ := GitbugCache.ResolveRepo(path)
 	repo, err := repository.OpenFsGoGitRepo(path, nil, Filesystem)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	rc, err = GitbugCache.RegisterRepository(path, repo)
-	if err != nil {
-		return nil, err
+	if rc == nil {
+		rc, err = GitbugCache.RegisterRepository(path, repo)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
-	return rc, nil
+	return repo.GetGitRepo(), rc, nil
 }
 
 func GetBugsForRepo(path string) ([]interface{}, error) {
-	return listBugsForRepoCache(OpenRepo(path))
+	_, rc, err := OpenRepo(path)
+	if err == nil {
+		return listBugsForRepoCache(rc, nil)
+	}
+	return nil, err
 }
 
 func listBugsForRepoCache(repoCache *bugcache.RepoCache, err error) ([]interface{}, error) {

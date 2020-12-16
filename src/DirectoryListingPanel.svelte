@@ -87,6 +87,7 @@ async function appendToPath(itemName) {
     <h3>{storeName}</h3>
     <h2>
         <!-- <a href="#/" on:click={() => newPath("")}>{storeName}</a> -->
+        <a href="#root" on:click={() => newPath("/")}>/</a>
         {#if repositoryRoot.length > 0}
         <a href="#{repositoryRoot}" on:click={() => newPath(repositoryRoot)}>{repositoryRoot}</a>
         {/if}

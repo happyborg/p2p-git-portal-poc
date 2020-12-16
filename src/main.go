@@ -22,7 +22,7 @@ func uploadFile(this js.Value, args []js.Value) (interface{}, error) {
 	fullPath := args[0].String()
 
 	array := args[1]
-	println("Array byteLength: ", array.Get("byteLength").Int())
+	// println("Array byteLength: ", array.Get("byteLength").Int())
 	buf := make([]byte, array.Get("byteLength").Int())
 	n := js.CopyBytesToGo(buf, array)
 
@@ -109,6 +109,7 @@ func main() {
 	gobridge.RegisterCallback("testTypes", testTypes)
 	gobridge.RegisterCallback("testGitClone", repo.GitCloneTest)
 
+	gobridge.RegisterCallback("openRepository", repo.OpenRepository)
 	gobridge.RegisterCallback("cloneRepository", repo.CloneRepository)
 	gobridge.RegisterCallback("getRepositoryList", repo.GetRepositoryList)
 	gobridge.RegisterCallback("getHeadCommitsRange", repo.GetHeadCommitsRange)

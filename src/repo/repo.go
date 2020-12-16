@@ -136,7 +136,7 @@ func CloneRepository(this js.Value, args []js.Value) (interface{}, error) {
 			println("gogit.Clone() failed: ", err.Error())
 			callback.Invoke(err.Error())
 		} else {
-			repoCache, err := OpenRepo(path)
+			_, repoCache, err := OpenRepo(path)
 			if err != nil {
 				callback.Invoke(err.Error())
 			}
