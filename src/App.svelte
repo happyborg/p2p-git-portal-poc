@@ -1,29 +1,31 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { uploadFile, getRepositoryList, getHeadCommitsRange, newRepository} = wasm;
+const { uploadFile, getRepositoryList, getHeadCommitsRange, newRepository, openRepository} = wasm;
 
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
 import IssuesListingPanel from './IssuesListingPanel.svelte'
 import CommitsListingPanel from './CommitsListingPanel.svelte'
 import DirectoryListingPanel from './DirectoryListingPanel.svelte'
 
-import FileUploadPanel from './test/FileUploadPanel.svelte'
+import UploadRepositoryPanel from './test/UploadRepositoryPanel.svelte'
 import GoGitClonePanel from './test/GoGitClonePanel.svelte'
 
-let droppedFiles = []
-let uploadingFile
+let uploadRoot = ''
+let filesToUpload = []
+let uploadStatus = ''
+let currentUpload = ''
 let errorMessage
 
-$: manageUploads(droppedFiles)
+$: manageUploads(filesToUpload)
 
 let newRepoName =''
 let activeRepository
 let directoryPath = ''
 
-let repositoryPath = ''
-$: repositoryPath = (allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
-    allRepositories[activeRepository].path : '')
+let repositoryRoot = ''
+$: repositoryRoot = (allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
+    allRepositories[activeRepository].path.trim() : '')
 
 $: updateDirectoryPath(activeRepository)
 $: console.log("directoryPath:", directoryPath)	// Debug
@@ -57,11 +59,10 @@ async function makeNewRepo() {
 // Development:
 let allRepositories = [];
 
-function readFile(entry, successCallback, errorCallback) {
-  entry.file(function(file) {
+async function readFile(entry, successCallback, errorCallback) {
     let reader = new FileReader();
 
-    reader.onload = function() {
+    reader.onload = async function() {
       successCallback(entry, reader.result);
     };
 
@@ -69,26 +70,55 @@ function readFile(entry, successCallback, errorCallback) {
       errorCallback(entry, reader.error);
     }
 
-    reader.readAsArrayBuffer(file);
-  }, errorCallback);
+    reader.readAsArrayBuffer(entry);
 }
 
-async function manageUploads(droppedFiles) {
+async function manageUploads(filesToUpload) {
 	console.log("manageUploads()");
+	if (filesToUpload === undefined || filesToUpload.length === 0) return
+
+	// TODO: check if repository exists
+	await uploadFiles(uploadRoot, filesToUpload)
+}
+
+async function uploadFiles(uploadRoot, filesToUpload) {
+	console.log("uploadFiles() to", uploadRoot);
+	const totalFiles = filesToUpload.length
+	let filesUploaded = 0
+	uploadStatus = "Uploading " + totalFiles + " files to " + uploadRoot + "/"
 
 	let fileInfo;
-	while (fileInfo = droppedFiles.pop()) {
-		console.log('uploading: ', fileInfo.fullPath);
-		// console.dir(fileInfo);
-		readFile(fileInfo, 
+	while (fileInfo = filesToUpload.pop()) {
+		const fullPath = fileInfo.webkitRelativePath
+		// console.log('uploading: ', fileInfo.webkitRelativePath);
+		currentUpload = fileInfo.webkitRelativePath.substring(uploadRoot+1)
+		// console.dir(fileInfo)
+		await readFile(fileInfo, 
 			async (fileInfo, result) => { 
-				console.log('passing to Golang: ', fileInfo.fullPath)
-				console.dir(result);
-				await uploadFile(...[fileInfo.fullPath, new Uint8Array(result)])
+				// console.log('passing to Golang: ', fullPath)
+				// console.dir(result);
+				await uploadFile(...[fullPath, new Uint8Array(result)])
+				filesUploaded += 1
+				uploadStatus = filesUploaded + " files uploaded to " + uploadRoot + "/"
+				if (filesUploaded === totalFiles) {
+					// TODO: open repository and select it
+					await openRepository(uploadRoot, (error) => {
+						if (error && error !== "") {
+							let message = "Failed to open repository of uploaded directory: " + error;
+							errorMessage = message;
+							console.log(message);
+						} else {
+							console.log("Upload complete and repository opened:", uploadRoot);
+							updateRepositoryUI(uploadRoot)
+						}
+					});
+				}
 			},
-			(fileInfo, result) => { console.log('error loading file: ', fileInfo.fullPath)}
+			(fileInfo, result) => { console.log('error loading file: ', fullPath)}
 		);
 	}
+
+	currentUpload = ''
 }
 
 async function updateRepositoryUI(newRepoPath) {
@@ -162,24 +192,32 @@ async function testReturnTypes() {
 </style>
 
 <main>
-<h1>p2p Git Portal (POC)</h1>
+<h1>Peer-to-Peer Git Portal</h1>
 
 <p> This is an experimental git portal (like github) that will run entirely in
 the browser from static storage, so no server-side code and no third parties involved. Built
 using Svelte and Golang/Web Assembly to run on peer-to-peer networks such as <a
 href='https://safenetwork.tech'>Safe Network</a>. Read more on github at <a
-href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></p>.
+href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a>.</p>
 
 <div class='top-grid'>
 	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
-	<IssuesListingPanel bind:repositoryPath={repositoryPath}></IssuesListingPanel>
+	<IssuesListingPanel bind:repositoryRoot={repositoryRoot}></IssuesListingPanel>
 </div>
 
 <div class='top-grid'>
-	<p>
-		<button type="button" on:click={() => { makeNewRepo(newRepoName); }}>New Repository:</button>
-        <input bind:value={newRepoName} placeholder="directory name"><br/>		
-	</p>
+	<div>
+		<h3>New</h3>
+		<p>
+			<input bind:value={newRepoName} placeholder="directory name">
+			<button type="button" on:click={() => { makeNewRepo(newRepoName); }}>New</button>
+		</p>
+		<UploadRepositoryPanel bind:uploadRoot={uploadRoot} bind:filesToUpload={filesToUpload}></UploadRepositoryPanel>
+		{#if uploadStatus !== ''}
+			{uploadStatus}<br/>
+			{currentUpload}
+		{/if}
+	</div>
 	<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
 </div>
 
@@ -190,8 +228,8 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></
 </div>
 {/if}
 <div class='top-grid'>
-	<!-- <FileUploadPanel bind:droppedFiles={droppedFiles} bind:errorMessage={errorMessage} >
-		<p>Files to upload: {droppedFiles.length}<br/>
+	<!-- <FileUploadPanel bind:filesToUpload={filesToUpload} bind:errorMessage={errorMessage} >
+		<p>Files to upload: {filesToUpload.length}<br/>
 			{#if uploadingFile}
 				Uploading: {uploadingFile}
 			{/if}
@@ -199,7 +237,7 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a></
 		</p>		
 	</FileUploadPanel> -->
 	<GoGitClonePanel updateRepositoryUI={updateRepositoryUI} bind:errorMessage={errorMessage} ></GoGitClonePanel>
-		<DirectoryListingPanel storeName="Storage" bind:directoryPath={directoryPath}></DirectoryListingPanel>
+		<DirectoryListingPanel storeName="Worktree" bind:repositoryRoot={repositoryRoot}></DirectoryListingPanel>
 	</div>
 <!-- <GoWasmExample bind:errorMessage={errorMessage} ></GoWasmExample> -->
 </main>

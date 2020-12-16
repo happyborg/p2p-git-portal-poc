@@ -4,9 +4,9 @@
 import wasm from './main.go';
 const { getIssuesForRepo } = wasm;
 
-export let repositoryPath;
+export let repositoryRoot;
 
-$: updateIssuesListing(repositoryPath);
+$: updateIssuesListing(repositoryRoot);
 
 let issues = [];
 
@@ -31,16 +31,14 @@ async function updateIssuesListing(repoPath) {
 
 </style>
 <div>
-    <ul>
-        <h2>Issues</h2>
-        {#if issues && issues.length > 0}
-            {#each issues as issue, index}
-                {#if issue}
-                    <span>#{issue.id.substr(0,7)} {issue.title}</span><br/>
-                {/if}
-            {/each}
-        {:else}
-            No issues.
-        {/if}
-    </ul>
+    <h3>Issues</h3>
+    {#if issues && issues.length > 0}
+        {#each issues as issue, index}
+            {#if issue}
+                <span>#{issue.id.substr(0,7)} {issue.title}</span><br/>
+            {/if}
+        {/each}
+    {:else}
+        No issues.
+    {/if}
 </div>

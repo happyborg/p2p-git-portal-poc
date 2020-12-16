@@ -1,8 +1,10 @@
 # p2p Git Portal - Proof of Concept
 
-The goal is a github like portal which can be hosted on peer-to-peer or static storage, initially targeting Safe Network. For example, a Safe Network in-browser app using `git-bug` and `go-git` libraries to create a realistic alternative to github.
+Git Portal is a github style sharing and collaboration application without server side code (no-backend).
 
-Using `git-bug` as a library will add support for issues (and later pull requests) to a `git` repo without polluting your commit history, with no need for server side hosting no service provider.
+- The aim is to provide an alternative to the centralisation of github and similar third party hosted services, and to avoid the need to self host such a service.
+- The approach is to provide web front end in a static application which can run in a browser directly from static or peer-to-peer storage without the need for server side code.
+- The benefit of this will be the convenience of a web application, without dependence on a third party and avoiding the vulnerabilities associated with servers and centralised services.
 
 Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there's a lot of interest in a github alternative which is truly p2p, along with decentralisation and open source, which is very encouraging.
 
@@ -12,22 +14,38 @@ Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there'
 
 **Forum (discourse):** [Git Portal Discussion](https://safenetforum.org/t/safenetwork-git-portal-discussion/32793?u=happybeing)
 
+## Screenshot
+<img src="./gitportal-poc-screenshot.png"/>
+
+## Objective
+The initial objective establish feasibility this project will create an initial app designed to run from static storage or on the peer-to-peer [Safe Network](https://safenetwork.tech) (a secure, anonymous, private peer-to-peer storage and communications platform). The result could then be adapted for use on any decentralised storage, and be the basis for more ambitious projects.
+## Approach
+
+The implementation identified `git-bug` (which adds issues to git functionality without polluting the commit history) and `go-git`/`go-billy` on which it depends. These are ideal for the proof-of-concept because they offer a good solution to providing issues on top of git, and a rapid route to prove the concept with a small team.
+
+Later the implementation will be reviewed in order to improve the technical solution. 
+
+Once we have a proof-of-concept application, a larger vision can be co-created which will align with the values and wants of collaborative software developers, as opposed to those of the Microsoft which owns and runs github for profit.
+### Golang v Rust
+
+One technical change to consider is moving from Golang/Wasm to Rust/Wasm to improve security and performance. Golang was chosen mainly for convenience and speed, but is slow, has a large runtime (12MB), and is not the best choice for building secure applications. All things which Rust/Wasm does very well.
+
 ## Proof of Concept Summary
 ### Architecture
 
 - Svelte UI plus Golang/Wasm using Golang wasm webpack plugin
-- *in the browser* "backend" with go-git/go-billy and git-bug (Golang/wasm)
+- *in the browser* 'no-backend' with go-git/go-billy and git-bug (Golang/wasm)
 
 ### Features
-- simple management of repos in browser (on go-billy/memfs)
-- ability to upload headless repo into go-billy/memfs
-- list repos, visit and interact with a repo
-- create and access git repo on a go-billy memfs file-system
-- use git-bug in browser to display and edit issues/comments
+- initialise, clone or upload repository 
+- list repositories
+- select and interact with a repository
+- browse the worktree, commits and issues
+- create/view/edit issues and comments
 
 ## Current Status
 
-**WORK IN PROGRESS** - everything above is working at least "under the hood". The UI is still more of a test harness, but if you open the browser console you get evidence of what is working.
+Most of the above feautures are either working or proven to be feasible by the work done so far. The UI is still a test harness but work has begun (mid December 2020) to provide a more github like look and feel.
 
 Remaining activity for the proof-of-concept:
 
@@ -44,6 +62,8 @@ Remaining activity for the proof-of-concept:
 - **Modify git-bug** to work with a billy.Filesystem and compile to web assembly. **Status:** I got this! The fork [happybeing/git-bug](https://github.com/happybeing/git-bug) is sufficient for remaining work to complete this proof-of-concept. [@happybeing](https://github.com/happybeing) will bring it up to date with the latest git-bug and work with git-bug author [@MichaelMure](https://github.com/MichaelMure) to provide a proper API for use by apps, as summarised in this [issue comment](https://github.com/happybeing/git-bug/issues/2#issuecomment-742494498).
 
 #### HTML / CSS Work
+(Begun mid Deceber 2020)
+
 The app in branch `main` runs and uses default Svelte HTML/CSS styling.
 
 I believe we should change the look and feel to mirror github in the short term. The reason being to help highlight our aim of replicating the key features of a git portal like github.
@@ -104,9 +124,6 @@ If you have problems, open the web browser console to look for any error message
 
 Note: drag and drop of files is not properly supported yet.
 
-### Screenshot
-<img src="./gitportal-poc-screenshot.png"/>
-
 ### Development
 Hot reloading generally works well, but if you have problems getting rid of a compilation error after you think you've fixed it, restart the `yarn dev` command.
 
@@ -139,4 +156,4 @@ If you wish to build or contribute to the code, get in touch and I'll add some b
 
 Everything is GPL3.0 unless otherwise stated. Any contributions are accepted on the condition they conform to this license.
 
-See also ./LICENSE
+See also [./LICENSE](./LICENSE)
