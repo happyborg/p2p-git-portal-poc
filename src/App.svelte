@@ -59,22 +59,6 @@ async function makeNewRepo() {
 // Development:
 let allRepositories = [];
 
-function OLDreadFile(entry, successCallback, errorCallback) {
-  entry.file(function(file) {
-    let reader = new FileReader();
-
-    reader.onload = function() {
-      successCallback(entry, reader.result);
-    };
-
-    reader.onerror = function() {
-      errorCallback(entry, reader.error);
-    }
-
-    reader.readAsArrayBuffer(file);
-  }, errorCallback);
-}
-
 async function readFile(entry, successCallback, errorCallback) {
     let reader = new FileReader();
 
@@ -108,7 +92,7 @@ async function uploadFiles(uploadRoot, filesToUpload) {
 		const fullPath = fileInfo.webkitRelativePath
 		// console.log('uploading: ', fileInfo.webkitRelativePath);
 		currentUpload = fileInfo.webkitRelativePath.substring(uploadRoot+1)
-		console.dir(fileInfo)
+		// console.dir(fileInfo)
 		await readFile(fileInfo, 
 			async (fileInfo, result) => { 
 				// console.log('passing to Golang: ', fullPath)
