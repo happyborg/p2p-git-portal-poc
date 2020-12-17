@@ -4,6 +4,7 @@
 import wasm from './main.go';
 const { getIssuesForRepo } = wasm;
 
+export let disabled = true
 export let repositoryRoot;
 
 $: updateIssuesListing(repositoryRoot);

@@ -2,6 +2,7 @@
 
 export let width = "600px"
 
+export let disabled = true
 export let uploadRoot;
 export let filesToUpload;
 
@@ -46,7 +47,7 @@ function uploadRepository(root, files){
 <div>
     <h3>Upload</h3>
     <p>
-        <input width={width} type="file" webkitdirectory=true bind:value={localPath} on:change={handleChange} on:input={handleInput} />
+        <input disabled={disabled} width={width} type="file" webkitdirectory=true bind:value={localPath} on:change={handleChange} on:input={handleInput} />
     </p>
     <slot></slot>
 </div>

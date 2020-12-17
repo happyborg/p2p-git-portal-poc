@@ -4,6 +4,7 @@
 import wasm from './main.go';
 const { getHeadCommitsRange } = wasm;
 
+export let disabled = true
 export let repositoryRoot;
 
 $: updateCommitsListing(repositoryRoot);

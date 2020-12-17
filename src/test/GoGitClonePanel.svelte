@@ -4,6 +4,7 @@ import wasm from '../main.go';
 
 const { cloneRepository } = wasm;
 
+export let disabled = true
 export let errorMessage;
 export let updateRepositoryUI;
 
@@ -71,7 +72,7 @@ async function doGitClone() {
 	<h3>Clone</h3>
 	<p>
         <input bind:value={uri} placeholder="URI">
-		<button type="button" on:click={() => { doGitClone(); }}>Clone</button>
+		<button disabled={disabled} type="button" on:click={() => { doGitClone(); }}>Clone</button>
 	</p>
 	<p>
 		<b>Optional:</b><br/>

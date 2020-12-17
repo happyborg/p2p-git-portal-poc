@@ -1,7 +1,7 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { uploadFile, getRepositoryList, getHeadCommitsRange, newRepository, openRepository} = wasm;
+const { wasmReady, uploadFile, getRepositoryList, getHeadCommitsRange, newRepository, openRepository} = wasm;
 
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
 import IssuesListingPanel from './IssuesListingPanel.svelte'
@@ -29,6 +29,14 @@ $: repositoryRoot = (allRepositories && activeRepository !== undefined && allRep
 
 $: updateDirectoryPath(activeRepository)
 $: console.log("directoryPath:", directoryPath)	// Debug
+
+let appLoading = true
+async function waitUntilReady() {
+	errorMessage = "Loading application (wasm) - please WAIT until this message disappears"
+	appLoading = !await wasmReady()
+	errorMessage = undefined
+}
+waitUntilReady();
 
 async function updateDirectoryPath(activeRepository) {
 	console.log("updateDirectoryPath()", activeRepository)
@@ -201,8 +209,8 @@ href='https://safenetwork.tech'>Safe Network</a>. Read more on github at <a
 href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a>.</p>
 
 <div class='top-grid'>
-	<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
-	<IssuesListingPanel bind:repositoryRoot={repositoryRoot}></IssuesListingPanel>
+	<RepoDashboardPanel bind:disabled={appLoading} bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
+	<IssuesListingPanel bind:disabled={appLoading} bind:repositoryRoot={repositoryRoot}></IssuesListingPanel>
 </div>
 
 <div class='top-grid'>
@@ -210,21 +218,21 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a>.<
 		<h3>New</h3>
 		<p>
 			<input bind:value={newRepoName} placeholder="directory name">
-			<button type="button" on:click={() => { makeNewRepo(newRepoName); }}>New</button>
+			<button disabled={appLoading} type="button" on:click={() => { makeNewRepo(newRepoName); }}>New</button>
 		</p>
-		<UploadRepositoryPanel bind:uploadRoot={uploadRoot} bind:filesToUpload={filesToUpload}></UploadRepositoryPanel>
+		<UploadRepositoryPanel bind:disabled={appLoading} bind:uploadRoot={uploadRoot} bind:filesToUpload={filesToUpload}></UploadRepositoryPanel>
 		{#if uploadStatus !== ''}
 			{uploadStatus}<br/>
 			{currentUpload}
 		{/if}
 	</div>
-	<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
+	<CommitsListingPanel bind:disabled={appLoading} bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
 </div>
 
 {#if errorMessage}
 <div>
 	<p style="color: #f00">{errorMessage}</p>
-	<button type="button" on:click={() => { errorMessage = undefined; }}>Dismiss</button>
+	<button disabled={appLoading} type="button" on:click={() => { errorMessage = undefined; }}>Dismiss</button>
 </div>
 {/if}
 <div class='top-grid'>
@@ -236,8 +244,8 @@ href='https://github.com/happybeing/p2p-git-portal-poc'>p2p-git-portal-poc</a>.<
 			<br/>
 		</p>		
 	</FileUploadPanel> -->
-	<GoGitClonePanel updateRepositoryUI={updateRepositoryUI} bind:errorMessage={errorMessage} ></GoGitClonePanel>
-		<DirectoryListingPanel storeName="Worktree" bind:repositoryRoot={repositoryRoot}></DirectoryListingPanel>
+	<GoGitClonePanel bind:disabled={appLoading} updateRepositoryUI={updateRepositoryUI} bind:errorMessage={errorMessage} ></GoGitClonePanel>
+		<DirectoryListingPanel bind:disabled={appLoading} storeName="Worktree" bind:repositoryRoot={repositoryRoot}></DirectoryListingPanel>
 	</div>
 <!-- <GoWasmExample bind:errorMessage={errorMessage} ></GoWasmExample> -->
 </main>
