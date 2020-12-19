@@ -4,15 +4,10 @@
 import wasm from './main.go';
 const { getHeadCommitsRange } = wasm;
 
-export let activeRepository;
-export let allRepositories;
+export let disabled = true
+export let repositoryRoot;
 
-let repositoryPath = '';
-$: repositoryPath = allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
-    allRepositories[activeRepository].path : ''; 
-
-
-$: updateCommitsListing(repositoryPath);
+$: updateCommitsListing(repositoryRoot);
 
 let commits = [];
 

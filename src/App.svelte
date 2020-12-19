@@ -1,7 +1,7 @@
 <script>
 // import { onMount } from 'svelte';
 import wasm from './main.go';
-const { uploadFile, getRepositoryList, getHeadCommitsRange, newRepository, openRepository} = wasm;
+const { wasmReady, uploadFile, getRepositoryList, getHeadCommitsRange, newRepository, openRepository} = wasm;
 
 import RepoDashboardPanel from './RepoDashboardPanel.svelte'
 import IssuesListingPanel from './IssuesListingPanel.svelte'
@@ -30,10 +30,18 @@ let directoryPath = ''
 
 let repositoryRoot = ''
 $: repositoryRoot = (allRepositories && activeRepository !== undefined && allRepositories[activeRepository] !== undefined ?
-    allRepositories[activeRepository].path.trim() : '')
+	allRepositories[activeRepository].path.trim() : '')
 
 $: updateDirectoryPath(activeRepository)
 $: console.log("directoryPath:", directoryPath)	// Debug
+
+let appLoading = true
+async function waitUntilReady() {
+	errorMessage = "Loading application (wasm) - please WAIT until this message disappears"
+	appLoading = !await wasmReady()
+	errorMessage = undefined
+}
+waitUntilReady();
 
 async function updateDirectoryPath(activeRepository) {
 	console.log("updateDirectoryPath()", activeRepository)
@@ -198,13 +206,12 @@ async function testReturnTypes() {
 			<input bind:value={newRepoName} class="appearance-none w-full p-3 text-xs font-semibold leading-none bg-gray-100 rounded outline-none" type="text" name="field-name" placeholder="Repository name">
 		  </div>
 		<p>
-			<button type="button" on:click={() => { makeNewRepo(newRepoName); }} class="bg-white text-sm text-gray-800 font-bold border border-gray-200 hover:border-red-600 hover:bg-red-500 hover:text-white py-2 px-5 inline-flex items-center">
+			<button  disabled={appLoading} type="button" on:click={() => { makeNewRepo(newRepoName); }} class="bg-white text-sm text-gray-800 font-bold border border-gray-200 hover:border-red-600 hover:bg-red-500 hover:text-white py-2 px-5 inline-flex items-center">
 				<span class="mr-2">Create</span>
 				<svg fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="16" height="16"><path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
 			</button>
 		</p>
-
-		<UploadRepositoryPanel bind:uploadRoot={uploadRoot} bind:filesToUpload={filesToUpload}></UploadRepositoryPanel>
+		<UploadRepositoryPanel bind:disabled={appLoading} bind:uploadRoot={uploadRoot} bind:filesToUpload={filesToUpload}></UploadRepositoryPanel>
 		{#if uploadStatus !== ''}
 			{uploadStatus}<br/>
 			{currentUpload}
@@ -227,13 +234,13 @@ async function testReturnTypes() {
 
 	<TabPanel>
 		<!-- <DirectoryListingPanel storeName="Storage" bind:directoryPath={directoryPath}></DirectoryListingPanel> -->
-		<DirectoryListingPanel storeName="Worktree" bind:repositoryRoot={repositoryRoot}></DirectoryListingPanel>
+		<DirectoryListingPanel bind:disabled={appLoading} storeName="Worktree" bind:repositoryRoot={repositoryRoot}></DirectoryListingPanel>
 	</TabPanel>
 	<TabPanel>
-		<CommitsListingPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></CommitsListingPanel>
+		<CommitsListingPanel bind:disabled={appLoading} bind:repositoryRoot={repositoryRoot}></CommitsListingPanel>
 	</TabPanel>
 	<TabPanel>
-		<IssuesListingPanel bind:repositoryPath={repositoryRoot}></IssuesListingPanel>
+		<IssuesListingPanel bind:disabled={appLoading} bind:repositoryRoot={repositoryRoot}></IssuesListingPanel>
 	</TabPanel>
 </Tabs>
 

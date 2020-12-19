@@ -101,9 +101,15 @@ func testTypes(this js.Value, args []js.Value) (interface{}, error) {
 
 var ready = false
 
+// Note: in JavaScript, await wasmReady() will not return until the wasm is loaded
+func wasmReady(this js.Value, args []js.Value) (interface{}, error) {
+	return ready, nil
+}
+
 func main() {
 	c := make(chan struct{}, 0)
 
+	gobridge.RegisterCallback("wasmReady", wasmReady)
 	gobridge.RegisterCallback("uploadFile", uploadFile)
 	gobridge.RegisterCallback("listHeadCommits", repo.ListHeadCommits)
 	gobridge.RegisterCallback("testTypes", testTypes)
