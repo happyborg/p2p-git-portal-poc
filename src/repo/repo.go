@@ -4,8 +4,11 @@
 package repo // TODO maybe rename to 'api' or something not 'repo'
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"io"
 	"path/filepath"
 	"strings"
 	"syscall/js"
@@ -337,16 +340,19 @@ func GetHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 	commits := make([]interface{}, last-first+1)
 	commitIndex := 0
 	totalCommits := 0
-
+	const layout = "Jan 2, 2006 at 3:04pm (UTC)"
 	err = commitIter.ForEach(func(c *object.Commit) error {
-		totalCommits += 1
+		totalCommits++
 		if commitIndex >= first && commitIndex <= last {
 			commit := make(map[string]interface{}, 0)
 			commit["hash"] = c.Hash.String()
 			commit["message"] = c.Message
+			commit["author"] = c.Author.String()
+			commit["author_img"] = GetGravatarImg(c.Author.Email)
+			commit["date"] = c.Author.When.Format(layout)
 
 			commits[commitIndex] = commit
-			commitIndex += 1
+			commitIndex++
 		}
 		return nil
 	})
@@ -357,4 +363,17 @@ func GetHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 	retCommits["commits"] = commits[0:commitIndex]
 
 	return retCommits, nil
+}
+func GetGravatarImg(email string) string {
+	email = strings.TrimSpace(email)
+	email = strings.ToLower(email)
+
+	h := md5.New()
+	io.WriteString(h, email)
+
+	finalBytes := h.Sum(nil)
+
+	finalString := "http://www.gravatar.com/avatar/" + hex.EncodeToString(finalBytes) + "?d=identicon"
+
+	return finalString
 }
