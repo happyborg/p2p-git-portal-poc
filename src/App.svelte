@@ -188,7 +188,7 @@ async function testReturnTypes() {
 		</svg> Git Portal
 	</a>
 	
-	<a class="leading-none flex ml-auto place-items-center text-sm inline-block bg-red text-gray-700 h-full px-6" href="/">
+	<a class="leading-none flex ml-auto place-items-center text-sm inline-block bg-red text-gray-700 h-full px-6" href="https://github.com/happyborg/p2p-git-portal-poc">
 		<svg xmlns="http://www.w3.org/2000/svg" 
 			class="w-5 h-5 mr-2"
 			fill="currentColor"
