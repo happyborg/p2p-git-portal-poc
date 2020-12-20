@@ -8,7 +8,7 @@ import FolderIcon from './components/icons/Folder.svelte'
 import FileIcon from './components/icons/File.svelte'
 const {getDirectory} = wasm;
 
-export let storeName = "Content"
+//export let storeName = "Content"
 export let repositoryRoot = ''
 
 let directoryPath = ''
