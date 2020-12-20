@@ -340,16 +340,17 @@ func GetHeadCommitsRange(this js.Value, args []js.Value) (interface{}, error) {
 	commits := make([]interface{}, last-first+1)
 	commitIndex := 0
 	totalCommits := 0
-	const layout = "Jan 2, 2006 at 3:04pm (UTC)"
+	const layout = "Jan 2, 2006"
 	err = commitIter.ForEach(func(c *object.Commit) error {
 		totalCommits++
 		if commitIndex >= first && commitIndex <= last {
 			commit := make(map[string]interface{}, 0)
 			commit["hash"] = c.Hash.String()
 			commit["message"] = c.Message
-			commit["author"] = c.Author.String()
+			commit["author"] = c.Author.Name
 			commit["author_img"] = GetGravatarImg(c.Author.Email)
 			commit["date"] = c.Author.When.Format(layout)
+			commit["timestamp"] = c.Author.When.Unix()
 
 			commits[commitIndex] = commit
 			commitIndex++

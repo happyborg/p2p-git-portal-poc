@@ -3,6 +3,7 @@
 
 import wasm from './main.go';
 import CommitIcon from './components/icons/Commit.svelte'
+
 const { getHeadCommitsRange } = wasm;
 
 export let repositoryRoot;
@@ -30,7 +31,7 @@ async function updateCommitsListing(repoPath) {
     }
 
     commits = [...result];
-
+    commits.sort((a, b) => b.timestamp - a.timestamp)
     const dateGroups = commits.reduce((groups, commit) => {
       const date = commit.date;
       if (!groups[date]) {
