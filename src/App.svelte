@@ -15,6 +15,7 @@ import Tab from './components/tabs/Tab.svelte'
 import Tabs from './components/tabs/Tabs.svelte'
 import TabList from './components/tabs/TabList.svelte'
 import TabPanel from './components/tabs/TabPanel.svelte'
+import Alert from './components/alert/Alert.svelte'
 
 let uploadRoot = ''
 let filesToUpload = []
@@ -196,7 +197,7 @@ async function testReturnTypes() {
 		</svg>  View on Github
 	</a>
 </nav>
-<div class="flex flex-wrap bg-gray-50 dark:bg-gray-900">
+<div class="flex flex-wrap bg-gray-50 dark:bg-gray-900 h-full text-gray-700 dark:text-gray-400">
 	<aside class="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-no-wrap md:overflow-hidden border-solid border-r border-light-gray bg-white flex flex-wrap items-center justify-between relative md:w-96 z-10 pb-4 px-6 pt-14">
 		<RepoDashboardPanel bind:activeRepository={activeRepository} bind:allRepositories={allRepositories}></RepoDashboardPanel>
 		
@@ -217,32 +218,38 @@ async function testReturnTypes() {
 			{currentUpload}
 		{/if}
 	</aside>
-		<main class="h-full overflow-y-auto w-full md:w-2/3 px-4 mb-4 md:ml-96">
-			<div class="my-5 block text-sm text-left text-gray-600 bg-blue-50 border border-blue-100 p-4 rounded-md" role="alert">
+		<main class="h-screen -mt-14 pt-14 overflow-y-auto w-full px-4 pb-4 md:ml-96 bg-gray-50">
+			<Alert type="info">
 			This is an experimental git portal (like github) that will run entirely in
 				the browser from static storage, so no server-side code and no third parties involved. Built
 				using Svelte and Golang/Web Assembly to run on peer-to-peer networks such as <a class="underline"
-				href='https://safenetwork.tech'>Safe Network</a>..
-			</div>
+				href='https://safenetwork.tech'>Safe Network</a>.
+			</Alert>
+			{#if errorMessage}
+				<Alert type="error" dismissable="true" bind:errorMessage={errorMessage}>
+					<p>{errorMessage}</p>
+				</Alert>
+			{/if}
+			{#if repositoryRoot}
+				<Tabs>
+					<TabList>
+						<Tab>Code</Tab>
+						<Tab>Commits</Tab>
+						<Tab>Issues</Tab>
+					</TabList>
 
-<Tabs>
-	<TabList>
-		<Tab>Code</Tab>
-		<Tab>Commits</Tab>
-		<Tab>Issues</Tab>
-	</TabList>
-
-	<TabPanel>
-		<!-- <DirectoryListingPanel storeName="Storage" bind:directoryPath={directoryPath}></DirectoryListingPanel> -->
-		<DirectoryListingPanel bind:disabled={appLoading} storeName="Worktree" bind:repositoryRoot={repositoryRoot}></DirectoryListingPanel>
-	</TabPanel>
-	<TabPanel>
-		<CommitsListingPanel bind:disabled={appLoading} bind:repositoryRoot={repositoryRoot}></CommitsListingPanel>
-	</TabPanel>
-	<TabPanel>
-		<IssuesListingPanel bind:disabled={appLoading} bind:repositoryRoot={repositoryRoot}></IssuesListingPanel>
-	</TabPanel>
-</Tabs>
+					<TabPanel>
+						<!-- <DirectoryListingPanel storeName="Storage" bind:directoryPath={directoryPath}></DirectoryListingPanel> -->
+						<DirectoryListingPanel bind:disabled={appLoading} storeName="Worktree" bind:repositoryRoot={repositoryRoot}></DirectoryListingPanel>
+					</TabPanel>
+					<TabPanel>
+						<CommitsListingPanel bind:disabled={appLoading} bind:repositoryRoot={repositoryRoot}></CommitsListingPanel>
+					</TabPanel>
+					<TabPanel>
+						<IssuesListingPanel bind:disabled={appLoading} bind:repositoryRoot={repositoryRoot}></IssuesListingPanel>
+					</TabPanel>
+				</Tabs>
+			{/if}
 
 
 </main>

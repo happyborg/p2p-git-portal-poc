@@ -1,7 +1,11 @@
 <script>
+import { utimes } from 'fs';
+
 // Show a directory in a repository
 
 import wasm from './main.go';
+import FolderIcon from './components/icons/Folder.svelte'
+import FileIcon from './components/icons/File.svelte'
 const {getDirectory} = wasm;
 
 export let storeName = "Content"
@@ -26,7 +30,8 @@ async function updateRepository(repositoryRoot) {
 async function updateDirectory(directoryPath) {
     // console.log("updateDirectory(): ", directoryPath)    
 	let listing = await getDirectory(directoryPath)
-	directory = [...listing]
+    directory = [...listing]
+    directory.sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : -1)
 	// console.dir(directory)
 
 	for (let i = 0; i < directory.length; i++) {
@@ -84,30 +89,51 @@ async function appendToPath(itemName) {
 
 </style>
 <div>
-    <h3>{storeName}</h3>
-    <h2>
+  
+    <div class="mb-2 text-sm">
         <!-- <a href="#/" on:click={() => newPath("")}>{storeName}</a> -->
-        <a href="#root" on:click={() => newPath("/")}>/</a>
+        <a href="#root" on:click={() => newPath("/")}>&nbsp;/&nbsp;</a>
         {#if repositoryRoot.length > 0}
-        <a href="#{repositoryRoot}" on:click={() => newPath(repositoryRoot)}>{repositoryRoot}</a>
+        <a href="#{repositoryRoot}" on:click={() => newPath(repositoryRoot)}> {repositoryRoot} </a>
         {/if}
         {#each crumbs as crumb, i}
-            &nbsp;/&nbsp;<a href="#{crumb}" on:click={() => newPath(buildPath(i))}>{crumb}</a>
+            &nbsp;/&nbsp;<a href="#{crumb}" on:click={() => newPath(buildPath(i))}> {crumb} </a>
         {/each}
-    </h2>
+    </div>
+    
+    {#if crumbs.length == 1}
+        <div class="bg-gray-100 px-4 pb-2 pt-1 border border-color-gray-300 rounded-t-sm border-b-0">
+            <a href="#{repositoryRoot}" on:click={() => newPath(repositoryRoot)}> ...</a>
+        </div>
+    {/if}
 
+    {#if crumbs.length > 1}
+        <div class="bg-gray-100 px-4 pb-2 pt-1 border border-color-gray-300 rounded-t-sm border-b-0">
+            <a href="#{crumbs[crumbs.length-2]}" on:click={() => newPath(buildPath(crumbs.length - 2))}> ...</a>
+        </div>
+    {/if}
     {#if directory && directory.length > 0}
-        {#each directory as item, index}
-            {#if item}
-                <span>
-                    {#if item.type === "directory"}
-                        <a href="#{item.name}" on:click={appendToPath(item.name)}><i>📁</i> {item.name}</a>
-                    {:else}
-                        <i>📄</i> {item.name}
+        <div class="border border-color-gray-300 rounded-b-sm text-sm border-t-0 bg-white">
+            {#each directory as item, index}
+                {#if item && item.type === "directory"}
+                <div class="border-t border-color-gray-300 px-4 py-2">
+                    <span>
+                        <a href="#{item.name}" on:click={appendToPath(item.name)}><FolderIcon cssClass="text-blue-400" /> {item.name}</a>
+                    </span>
+                </div>
                     {/if}
-                </span><br/>
-            {/if}
-        {/each}
+                
+            {/each}
+            {#each directory as item, index}
+                {#if item && item.type === "file"}
+                <div class="border-t border-color-gray-300 px-4 py-2">
+                    <span>
+                        <FileIcon /> {item.name}
+                    </span>
+                </div>
+                {/if}
+            {/each}
+        </div>
     {:else}
         No files.
     {/if}

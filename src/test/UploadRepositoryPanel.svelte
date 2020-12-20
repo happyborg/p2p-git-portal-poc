@@ -1,8 +1,6 @@
 <script>
 import Button from "../components/button/Button.svelte";
 
-export let width = "600px"
-
 export let disabled = true
 export let uploadRoot;
 export let filesToUpload;
