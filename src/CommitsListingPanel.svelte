@@ -72,10 +72,10 @@ async function updateCommitsListing(repoPath) {
               <ol class="border border-gray-300 rounded bg-white">
                 {#each date.commits as commit, index}
                   {#if commit}
-                    <li class="border-t border-gray-300 p-3 first-child:border-t-0">
-                      <p class="font-semibold text-sm">{commit.message}</p>
+                    <li class="border-t border-gray-300 p-3 pt-2 first-child:border-t-0">
+                      <p class="font-semibold text-sm mb-1">{commit.message}</p>
                       <div class="flex items-center text-sm">
-                        <div class="relative hidden w-6 h-6 mr-3 rounded-full md:block">
+                        <div class="relative hidden w-6 h-6 mr-2 rounded-full md:block">
                           <img class="object-cover w-full h-full rounded-full" src="{commit.author_img}" alt="" />
                           <div class="absolute inset-0 rounded-full shadow-inner" aria-hidden="true"></div>
                         </div>
