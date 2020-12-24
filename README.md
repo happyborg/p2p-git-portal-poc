@@ -6,7 +6,7 @@ Git Portal is a github style sharing and collaboration application without serve
 - The approach is to provide web front end in a static application which can run in a browser directly from static or peer-to-peer storage without the need for server side code.
 - The benefit of this will be the convenience of a web application, without dependence on a third party and avoiding the vulnerabilities associated with servers and centralised services.
 
-Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there's a lot of interest in a github alternative which is truly p2p, along with decentralisation and open source, which is very encouraging.
+In just a few weeks this project as received a lot of encouragement which has been amazing!
 
 **Hashtag #gitportal:** [Mastodon](https://mastodon.technology/web/timelines/tag/gitportal) | [Twitter](https://twitter.com/hashtag/gitportal)
 
@@ -17,19 +17,27 @@ Based on responses on [Mastodon](https://mastodon.technology/@happybeing) there'
 ## Screenshot
 <img src="./gitportal-poc-screenshot.png"/>
 
+## Using The Demo
+A recent live demo is available at http://gitch.happybeing.com. That is a static HTML no-backend app (so no-server side code). 
+
+You can create or upload repositories immediately using the buttons provided, but in order to clone a repository need to use a proxy or a browser plugin to avoid problems with CORS checks in the browser. A proxy is necessary for github, but a browser plugin is enough for some git services such as gitlab. See the [section on CORS](#setup-a-cors-proxy) if you wish to try out the clone feature.
+
+Once you have a repository stored in Git Portal you will be able to browse the file worktree and .git directories, view commits (if any), and view issues (a few example issues are added when you create a new repository).
+
+The UI does not yet allow you to create or edit issues.
 ## Objective
-The initial objective establish feasibility this project will create an initial app designed to run from static storage or on the peer-to-peer [Safe Network](https://safenetwork.tech) (a secure, anonymous, private peer-to-peer storage and communications platform). The result could then be adapted for use on any decentralised storage, and be the basis for more ambitious projects.
+The initial objective has been achieved: to establish feasibility of a Git Portal app which can run from static web hosting or from the peer-to-peer storage such as [Safe Network](https://safenetwork.tech) (a secure, anonymous, private peer-to-peer storage and communications platform). 
+
+Following this we will plan and develop a functional Git Portal product for Safe Network. 
+
+The proof-of-concept could be adapted for use on with any decentralised storage, and be the basis for other ambitious peer-to-peer git related projects.
 ## Approach
 
-The implementation identified `git-bug` (which adds issues to git functionality without polluting the commit history) and `go-git`/`go-billy` on which it depends. These are ideal for the proof-of-concept because they offer a good solution to providing issues on top of git, and a rapid route to prove the concept with a small team.
+The proof-of-concept / demonstration utilises Golang/Wasm with Svelte front-end, in order to make use of functionality provided in Golang by `git-bug` (which adds issues to git functionality without polluting the commit history).
 
-Later the implementation will be reviewed in order to improve the technical solution. 
+For the product we will move away from Golang due to performance and security concerns, and are looking eventually to a Rust/Wasm solution, while using existing libraries where this can speed development (e.g. JavaScript git functionality).
 
-Once we have a proof-of-concept application, a larger vision can be co-created which will align with the values and wants of collaborative software developers, as opposed to those of the Microsoft which owns and runs github for profit.
-### Golang v Rust
-
-One technical change to consider is moving from Golang/Wasm to Rust/Wasm to improve security and performance. Golang was chosen mainly for convenience and speed, but is slow, has a large runtime (12MB), and is not the best choice for building secure applications. All things which Rust/Wasm does very well.
-
+The product will remain compatible with `git-bug` at the filesystem level in order to make use of its proven design, continued enhancements (e.g. to support git PRs), and excellent command line interface (as a 'git extra').
 ## Proof of Concept Summary
 ### Architecture
 
@@ -45,37 +53,27 @@ One technical change to consider is moving from Golang/Wasm to Rust/Wasm to impr
 
 ## Current Status
 
-Most of the above feautures are either working or proven to be feasible by the work done so far. The UI is still a test harness but work has begun (mid December 2020) to provide a more github like look and feel.
+Most of the above feautures are either working or proven to be feasible by the work done so far. The UI has begun to take shape and while work continues to extend demo features, we're now planning development into a product.
 
 Remaining activity for the proof-of-concept:
 
 ### Activity & Opportunities to Help
 
-- **Modify Styling** of HTML/CSS. **Status:** plenty to do!
+#### Proof-of-Concept
+- **Features and UI** - Work continues to extend and improve functionality and UI based on the current Go/Wasm no-backend, and Svelte/Tailwind CSS front-end. Suggestions and discussion of UI/UX are welcome on [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1). **Help is welcome** with several small tasks in Svelte front-end and Golang no-server no-backend, but these are not yet written down. So ask if you may be able to help and I will begin to turn my thoughts into tasks with your prompting. Bigger tasks will flow from this if you want to help design or implement the features and API providing these to the front-end. 
 
-	**Help Wanted** with tasks suitable for FOSS folks with anything from basic CSS skills and a desire to learn some Svelte (with my help) to folks who want to create the vision for a future git portal UX (user experience). Some notes are included below and there's a discussion on [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1).
+- **git-bug** work is adequate for now, so no further work is being done although we may update this in collaboration with the `git-bug` author. This is not necessary long-term though, see next.
 
-- **Improve Features and UI** to create a more realistic demonstration and formulate a suitable feature set for the API to support the app. 
+#### Git Portal Product
+- **Work on a product** is at the investigation and planning stage. The first product will follow the lead of existing portals, notably github in terms of functionality and user experience. Being similar shows both what we are, and what we still need to do in order to meet expectations.
 
-	**Help Wanted** with several small tasks in Svelte front-end and Golang no-server back-end, but these are not yet written down. So ask if you may be able to help and I will begin to turn my thoughts into tasks with your prompting. Bigger tasks will flow from this if you want to help design or implement the features and API providing these to the front-end.
 
-- **Modify git-bug** to work with a billy.Filesystem and compile to web assembly. **Status:** I got this! The fork [happybeing/git-bug](https://github.com/happybeing/git-bug) is sufficient for remaining work to complete this proof-of-concept. [@happybeing](https://github.com/happybeing) will bring it up to date with the latest git-bug and work with git-bug author [@MichaelMure](https://github.com/MichaelMure) to provide a proper API for use by apps, as summarised in this [issue comment](https://github.com/happybeing/git-bug/issues/2#issuecomment-742494498).
+	The implementation is likely to involve JavaScript and Rust/Wasm, shifting from the former to the latter over time and as development resources permit.
 
-#### HTML / CSS Work
-(Begun mid Deceber 2020)
-
-The app in branch `main` runs and uses default Svelte HTML/CSS styling.
-
-I believe we should change the look and feel to mirror github in the short term. The reason being to help highlight our aim of replicating the key features of a git portal like github.
-
-If you wish to comment on or help with HTML/CSS styling please see [#issue 1](https://github.com/happybeing/p2p-git-portal-poc/issues/1).
-
-Later we can differentiate for a more community driven and oriented feature set and our own visual identity, but initially I think it will help to demonstrate the purpose of a proof-of-concept, what is working at any stage and where work is still needed.
-
-At some point we may want to break away from being a github clone because the aims and direction of the two projects are different in key respects, so we should also be thinking about re-inventing the git portal without the goal of centralisation, but of re-sharing the value created by the community in whatever ways the community can benefit.
-
-## Setup
-
+- **Git Portal Vision** 
+	From a peer-to-peer alternative to github and similar third party git portal services, we will develop our vision for a community driven and oriented feature set with our own visual identity. This means re-inventing the git portal without the goal of centralisation, and instead to share and return value created by the community in whatever ways the community can benefit.
+## Development
+To participate in development you will need to set-up as follows.
 ### Pre-requisites
 
 Install Golang v1.15, `node` v14.14 and `yarn` v1.22. You could use `npm`, I just prefer `yarn`.
