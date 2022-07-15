@@ -8,7 +8,7 @@
     "autoprefixer": "^9",
     "install": "^0.13.0",
     "postcss": "^7",
-    "svelte": "^3.29.4",
+    "svelte": "^3.49.0",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat"
   },
   "devDependencies": {
